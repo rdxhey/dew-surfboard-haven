@@ -24,25 +24,37 @@ const Index = () => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col justify-between py-4 px-6">
+    <div className="min-h-screen flex flex-col justify-between py-4 px-6 overflow-hidden">
       {/* Top Navigation */}
-      <div className={`flex justify-end py-4 ${loaded ? 'animate-fade-in' : 'opacity-0'}`}>
+      <div 
+        className={`flex justify-end py-4 ${loaded ? 'animate-slide-in-right' : 'translate-x-full'}`}
+        style={{ transitionDuration: '0.5s' }}
+      >
         <ServiceNav />
       </div>
       
       {/* Main Content */}
       <div className="flex-1 flex flex-col items-center justify-center gap-8 -mt-20">
-        <div className={`mb-8 ${loaded ? 'animate-fade-up' : 'opacity-0'}`} style={{ transitionDelay: '0.1s' }}>
+        <div 
+          className={`mb-8 ${loaded ? 'animate-fade-up' : 'opacity-0 translate-y-10'}`} 
+          style={{ transitionDelay: '0.2s' }}
+        >
           <Logo />
         </div>
         
-        <div className={`w-full max-w-xl px-4 ${loaded ? 'animate-fade-up' : 'opacity-0'}`} style={{ transitionDelay: '0.2s' }}>
+        <div 
+          className={`w-full max-w-xl px-4 ${loaded ? 'animate-fade-up' : 'opacity-0 translate-y-10'}`} 
+          style={{ transitionDelay: '0.3s' }}
+        >
           <SearchBar onSearch={handleSearch} />
         </div>
       </div>
       
       {/* Footer */}
-      <Footer className={`${loaded ? 'animate-fade-in' : 'opacity-0'}`} style={{ transitionDelay: '0.4s' }} />
+      <Footer 
+        className={`${loaded ? 'animate-slide-in-right' : 'translate-x-full'}`} 
+        style={{ transitionDelay: '0.4s', transitionDuration: '0.5s' }} 
+      />
     </div>
   );
 };

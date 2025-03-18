@@ -4,11 +4,12 @@ import { cn } from '@/lib/utils';
 
 interface FooterProps {
   className?: string;
+  style?: React.CSSProperties;
 }
 
-const Footer = ({ className }: FooterProps) => {
+const Footer = ({ className, style }: FooterProps) => {
   return (
-    <footer className={cn('text-sm text-gray-500 py-6 animate-fade-in', className)}>
+    <footer className={cn('text-sm text-gray-500 py-6 animate-fade-in', className)} style={style}>
       <div className="container mx-auto flex flex-col sm:flex-row justify-between items-center">
         <div className="flex gap-6 mb-4 sm:mb-0">
           <FooterLink href="#about">About</FooterLink>

@@ -1,6 +1,7 @@
 
 import React from 'react';
 import { cn } from '@/lib/utils';
+import { Link } from 'react-router-dom';
 
 interface LogoProps {
   size?: 'sm' | 'md' | 'lg';
@@ -15,11 +16,13 @@ const Logo = ({ size = 'lg', className }: LogoProps) => {
   };
 
   return (
-    <div className={cn('font-bold tracking-tighter animate-fade-in', sizeClasses[size], className)}>
-      <span className="text-primary">D</span>
-      <span className="text-primary opacity-90">e</span>
-      <span className="text-primary opacity-80">w</span>
-    </div>
+    <Link to="/" className="cursor-pointer">
+      <div className={cn('font-bold tracking-tighter', sizeClasses[size], className)}>
+        <span className="text-primary">D</span>
+        <span className="text-primary opacity-90">e</span>
+        <span className="text-primary opacity-80">w</span>
+      </div>
+    </Link>
   );
 };
 
