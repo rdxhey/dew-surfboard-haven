@@ -17,10 +17,12 @@ const Logo = ({ size = 'lg', className }: LogoProps) => {
 
   return (
     <Link to="/" className="cursor-pointer">
-      <div className={cn('font-bold tracking-tighter', sizeClasses[size], className)}>
-        <span className="text-primary">D</span>
-        <span className="text-primary opacity-90">e</span>
-        <span className="text-primary opacity-80">w</span>
+      <div className={cn('font-bold tracking-tighter overflow-hidden bg-primary rounded-md', sizeClasses[size], className)}>
+        <div className="flex items-center text-white p-1">
+          <span className="font-bold">D</span>
+          <span className="font-light">e</span>
+          <span className="font-light">w</span>
+        </div>
       </div>
     </Link>
   );

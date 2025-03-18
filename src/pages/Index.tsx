@@ -36,8 +36,8 @@ const Index = () => {
       {/* Main Content */}
       <div className="flex-1 flex flex-col items-center justify-center gap-8 -mt-20">
         <div 
-          className={`mb-8 ${loaded ? 'animate-fade-up' : 'opacity-0 translate-y-10'}`} 
-          style={{ transitionDelay: '0.2s' }}
+          className={`mb-8 ${loaded ? 'animate-slide-in-right' : 'translate-x-full'}`} 
+          style={{ transitionDelay: '0.2s', transitionDuration: '0.5s' }}
         >
           <Logo />
         </div>
