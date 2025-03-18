@@ -1,7 +1,8 @@
 
 import React from 'react';
-import { UserCircle, Video } from 'lucide-react';
+import { UserCircle, Video, Image } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { Link } from 'react-router-dom';
 
 interface ServiceNavProps {
   className?: string;
@@ -10,6 +11,11 @@ interface ServiceNavProps {
 const ServiceNav = ({ className }: ServiceNavProps) => {
   return (
     <div className={cn('flex justify-center items-center gap-6', className)}>
+      <ServiceButton 
+        icon={<Image size={20} />}
+        label="Images"
+        href="/search?type=images"
+      />
       <ServiceButton 
         icon={<UserCircle size={20} />}
         label="Diary Account"
@@ -32,8 +38,8 @@ interface ServiceButtonProps {
 
 const ServiceButton = ({ icon, label, href }: ServiceButtonProps) => {
   return (
-    <a 
-      href={href}
+    <Link 
+      to={href}
       className="group flex flex-col items-center hover-lift"
     >
       <div className="w-12 h-12 rounded-full glass-effect flex items-center justify-center button-transition group-hover:border-primary/20">
@@ -44,7 +50,7 @@ const ServiceButton = ({ icon, label, href }: ServiceButtonProps) => {
       <span className="mt-2 text-sm text-gray-600 group-hover:text-primary transition-colors duration-300">
         {label}
       </span>
-    </a>
+    </Link>
   );
 };
 

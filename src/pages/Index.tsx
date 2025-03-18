@@ -4,9 +4,11 @@ import Logo from '@/components/Logo';
 import SearchBar from '@/components/SearchBar';
 import ServiceNav from '@/components/ServiceNav';
 import Footer from '@/components/Footer';
+import { useNavigate } from 'react-router-dom';
 
 const Index = () => {
   const [loaded, setLoaded] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     // Add a small delay for a smoother entrance animation
@@ -19,8 +21,7 @@ const Index = () => {
 
   const handleSearch = (query: string) => {
     console.log('Searching for:', query);
-    // In a real app, this would redirect to search results
-    // window.location.href = `/search?q=${encodeURIComponent(query)}`;
+    navigate(`/search?q=${encodeURIComponent(query)}&type=web`);
   };
 
   return (
@@ -48,12 +49,30 @@ const Index = () => {
         >
           <SearchBar onSearch={handleSearch} />
         </div>
+        
+        <div 
+          className={`flex gap-4 mt-6 ${loaded ? 'animate-fade-up' : 'opacity-0 translate-y-10'}`} 
+          style={{ transitionDelay: '0.4s' }}
+        >
+          <button 
+            onClick={() => navigate('/search?type=web')}
+            className="py-2 px-4 bg-gray-50 hover:bg-gray-100 rounded text-sm text-gray-700 transition-colors"
+          >
+            Dew Search
+          </button>
+          <button 
+            onClick={() => navigate('/search?type=images')}
+            className="py-2 px-4 bg-gray-50 hover:bg-gray-100 rounded text-sm text-gray-700 transition-colors"
+          >
+            Dew Images
+          </button>
+        </div>
       </div>
       
       {/* Footer */}
       <Footer 
         className={`${loaded ? 'animate-slide-in-right' : 'translate-x-full'}`} 
-        style={{ transitionDelay: '0.4s', transitionDuration: '0.5s' }} 
+        style={{ transitionDelay: '0.5s', transitionDuration: '0.5s' }} 
       />
     </div>
   );
