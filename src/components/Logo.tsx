@@ -18,7 +18,7 @@ const Logo = ({ size = 'lg', className }: LogoProps) => {
   return (
     <Link to="/" className="cursor-pointer">
       <div className={cn('font-bold tracking-tighter', sizeClasses[size], className)}>
-        <span className="text-primary">D</span>
+        <span className="text-primary font-extrabold">D</span>
         <span className="text-gray-800">ew</span>
       </div>
     </Link>
