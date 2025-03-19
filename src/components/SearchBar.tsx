@@ -14,6 +14,7 @@ const SearchBar = ({ className, onSearch, initialValue = '' }: SearchBarProps) =
   const [query, setQuery] = useState(initialValue);
   const [isFocused, setIsFocused] = useState(false);
   const [isListening, setIsListening] = useState(false);
+  const [isImageSearchActive, setIsImageSearchActive] = useState(false);
   const navigate = useNavigate();
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -29,9 +30,18 @@ const SearchBar = ({ className, onSearch, initialValue = '' }: SearchBarProps) =
   };
 
   const handleImageSearch = () => {
-    if (fileInputRef.current) {
-      fileInputRef.current.click();
-    }
+    setIsImageSearchActive(true);
+    // Add animation and delay before showing file input
+    setTimeout(() => {
+      if (fileInputRef.current) {
+        fileInputRef.current.click();
+      }
+    }, 300);
+    
+    // Reset the animation state after some time
+    setTimeout(() => {
+      setIsImageSearchActive(false);
+    }, 1000);
   };
 
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -49,14 +59,16 @@ const SearchBar = ({ className, onSearch, initialValue = '' }: SearchBarProps) =
     // In a real app, you would use the Web Speech API
     setTimeout(() => {
       setQuery('voice search example');
-      setIsListening(false);
       
-      // Auto-submit after voice input
-      if (onSearch) {
-        onSearch('voice search example');
-      } else {
-        navigate('/search?q=voice_search_example&type=web');
-      }
+      // Auto-submit after voice input with a delay
+      setTimeout(() => {
+        setIsListening(false);
+        if (onSearch) {
+          onSearch('voice search example');
+        } else {
+          navigate('/search?q=voice_search_example&type=web');
+        }
+      }, 300);
     }, 2000);
   };
 
@@ -92,27 +104,44 @@ const SearchBar = ({ className, onSearch, initialValue = '' }: SearchBarProps) =
           <button
             type="button"
             onClick={handleImageSearch}
-            className="h-10 w-10 flex items-center justify-center text-gray-500 hover:text-primary transition-colors"
+            className={cn(
+              "h-10 w-10 flex items-center justify-center text-gray-500 transition-all duration-300 rounded-full",
+              isImageSearchActive ? "bg-primary/10 text-primary animate-pulse scale-110" : "hover:text-primary hover:bg-gray-100"
+            )}
             aria-label="Image search"
             title="Search by image"
           >
-            <Camera size={20} />
+            <Camera size={20} className={cn(
+              "transition-transform duration-300",
+              isImageSearchActive && "animate-bounce"
+            )} />
           </button>
           
           <button
             type="button"
             onClick={handleVoiceSearch}
-            className={`h-10 w-10 flex items-center justify-center transition-colors ${isListening ? 'text-primary animate-pulse' : 'text-gray-500 hover:text-primary'}`}
+            className={cn(
+              "h-10 w-10 flex items-center justify-center transition-all duration-300 rounded-full", 
+              isListening 
+                ? "bg-primary/20 text-primary scale-110" 
+                : "text-gray-500 hover:text-primary hover:bg-gray-100"
+            )}
             aria-label="Voice search"
             title="Search by voice"
             disabled={isListening}
           >
-            <Mic size={20} />
+            <Mic size={20} className={cn(
+              "transition-transform duration-300",
+              isListening && "animate-pulse"
+            )} />
+            {isListening && (
+              <span className="absolute inset-0 rounded-full animate-ping bg-primary/30"></span>
+            )}
           </button>
           
           <button
             type="submit"
-            className="h-10 w-10 flex items-center justify-center text-gray-500 hover:text-primary transition-colors"
+            className="h-10 w-10 flex items-center justify-center text-gray-500 hover:text-primary hover:bg-gray-100 transition-all duration-300 rounded-full"
             aria-label="Submit search"
           >
             <Search size={20} />
