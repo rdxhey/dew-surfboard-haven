@@ -4,10 +4,12 @@ import { useNavigate } from 'react-router-dom';
 import { ArrowLeft, Calendar, Star } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
+import DewssGame from '@/components/DewssGame';
 
 const Dewdols = () => {
   const [loaded, setLoaded] = useState(false);
   const [selectedDewdol, setSelectedDewdol] = useState<number | null>(null);
+  const [showGame, setShowGame] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -32,6 +34,16 @@ const Dewdols = () => {
     // In a real app, this would show the specific dewdol in detail
   };
 
+  const toggleGame = () => {
+    setShowGame(prev => !prev);
+    // Scroll to game section when opening
+    if (!showGame) {
+      setTimeout(() => {
+        document.getElementById('dewss-game-section')?.scrollIntoView({ behavior: 'smooth' });
+      }, 100);
+    }
+  };
+
   return (
     <div className="min-h-screen flex flex-col p-6 bg-gradient-to-b from-blue-50 to-white">
       <header className="flex items-center justify-between mb-8">
@@ -52,11 +64,31 @@ const Dewdols = () => {
       </header>
       
       <main className="flex-1">
-        <div className="max-w-4xl mx-auto mb-8">
-          <p className="text-center text-gray-600 mb-8">
-            Dewdols are special versions of the DEW logo created to celebrate holidays, 
-            anniversaries, and remarkable individuals. Explore our collection below!
-          </p>
+        <div className="max-w-4xl mx-auto mb-12">
+          <div className="flex flex-col md:flex-row gap-4 items-center justify-between mb-8">
+            <p className="text-center md:text-left text-gray-600">
+              Dewdols are special versions of the DEW logo created to celebrate holidays, 
+              anniversaries, and remarkable individuals. Explore our collection below!
+            </p>
+            
+            <Button 
+              onClick={toggleGame}
+              variant="outline" 
+              className="group relative overflow-hidden bg-gradient-to-r from-blue-500 to-green-500 text-white border-0 hover:shadow-lg transition-all"
+            >
+              <span className="absolute inset-0 w-full h-full bg-gradient-to-r from-blue-400 to-green-400 group-hover:scale-110 transition-transform duration-300"></span>
+              <span className="relative z-10 flex items-center">
+                <Star size={16} className="mr-2 animate-pulse" />
+                {showGame ? 'Hide DEWSS Game' : 'Play DEWSS Game'}
+              </span>
+            </Button>
+          </div>
+          
+          {showGame && (
+            <div id="dewss-game-section" className="mb-12 animate-fade-in">
+              <DewssGame />
+            </div>
+          )}
           
           <div className={`grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 ${loaded ? 'animate-fade-in' : 'opacity-0'}`}>
             {dewdols.map((dewdol, index) => (
