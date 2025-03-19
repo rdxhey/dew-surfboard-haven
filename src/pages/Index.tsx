@@ -5,6 +5,8 @@ import SearchBar from '@/components/SearchBar';
 import ServiceNav from '@/components/ServiceNav';
 import Footer from '@/components/Footer';
 import { useNavigate } from 'react-router-dom';
+import { Sparkles } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 
 const Index = () => {
   const [loaded, setLoaded] = useState(false);
@@ -22,6 +24,12 @@ const Index = () => {
   const handleSearch = (query: string) => {
     console.log('Searching for:', query);
     navigate(`/search?q=${encodeURIComponent(query)}&type=web`);
+  };
+
+  const handleFeelingRight = () => {
+    // This would normally fetch a random topic or surprise content
+    // For now, we'll navigate to a predefined search with a special parameter
+    navigate('/search?q=surprise&type=web&feeling=right');
   };
 
   return (
@@ -66,6 +74,21 @@ const Index = () => {
           >
             Dew Images
           </button>
+        </div>
+        
+        <div 
+          className={`mt-2 ${loaded ? 'animate-fade-up' : 'opacity-0 translate-y-10'}`} 
+          style={{ transitionDelay: '0.5s' }}
+        >
+          <Button 
+            onClick={handleFeelingRight}
+            variant="ghost" 
+            size="sm" 
+            className="group text-primary hover:bg-primary/10 hover:text-primary transition-all duration-300"
+          >
+            <Sparkles size={16} className="mr-1 group-hover:animate-pulse" /> 
+            I'm Feeling Right
+          </Button>
         </div>
       </div>
       
