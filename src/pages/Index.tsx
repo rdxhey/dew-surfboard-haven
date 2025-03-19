@@ -10,6 +10,7 @@ import { Button } from '@/components/ui/button';
 
 const Index = () => {
   const [loaded, setLoaded] = useState(false);
+  const [isRightAnimating, setIsRightAnimating] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -27,9 +28,12 @@ const Index = () => {
   };
 
   const handleFeelingRight = () => {
-    // This would normally fetch a random topic or surprise content
-    // For now, we'll navigate to a predefined search with a special parameter
-    navigate('/search?q=surprise&type=web&feeling=right');
+    setIsRightAnimating(true);
+    
+    // Add a delay before navigation to allow animation to play
+    setTimeout(() => {
+      navigate('/dewdols');
+    }, 800);
   };
 
   return (
@@ -84,10 +88,14 @@ const Index = () => {
             onClick={handleFeelingRight}
             variant="ghost" 
             size="sm" 
-            className="group text-primary hover:bg-primary/10 hover:text-primary transition-all duration-300"
+            className={`group text-primary hover:bg-primary/10 hover:text-primary transition-all duration-300 relative overflow-hidden ${isRightAnimating ? 'animate-bounce' : ''}`}
+            disabled={isRightAnimating}
           >
-            <Sparkles size={16} className="mr-1 group-hover:animate-pulse" /> 
+            <Sparkles size={16} className={`mr-1 ${isRightAnimating ? 'animate-spin' : 'group-hover:animate-pulse'}`} /> 
             I'm Feeling Right
+            {isRightAnimating && (
+              <span className="absolute inset-0 animate-pulse bg-primary/10 rounded-md"></span>
+            )}
           </Button>
         </div>
       </div>
