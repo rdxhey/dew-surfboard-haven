@@ -1,491 +1,377 @@
 
-import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { ArrowLeft, Search, Globe, Lightbulb, Info, Target, Users, Book, Smartphone, Laptop, Monitor } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import Footer from "@/components/Footer";
-import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
+import { ChevronLeft, Smartphone, Laptop, Search, Code, Lock, Rocket, BarChart } from 'lucide-react';
+import Footer from '@/components/Footer';
 
 const About = () => {
+  const [loaded, setLoaded] = useState(false);
   const [activeTab, setActiveTab] = useState("mission");
-  const [showContent, setShowContent] = useState(false);
-  const navigate = useNavigate();
 
   useEffect(() => {
-    // Animate content appearance
+    // Add a small delay for a smoother entrance animation
     const timer = setTimeout(() => {
-      setShowContent(true);
+      setLoaded(true);
     }, 100);
+    
     return () => clearTimeout(timer);
   }, []);
 
   return (
-    <div className="min-h-screen flex flex-col bg-gradient-to-b from-blue-50 to-white">
-      <header className="sticky top-0 z-10 p-4 md:p-6 flex items-center justify-between bg-white/90 backdrop-blur-sm border-b border-blue-100 shadow-sm">
-        <Button
-          onClick={() => navigate("/")}
-          variant="ghost"
-          size="sm"
-          className="flex items-center text-primary hover:bg-primary/10"
-        >
-          <ArrowLeft size={16} className="mr-2" />
-          Back to DEW
-        </Button>
-        <h1 className="text-2xl md:text-3xl font-bold text-primary">
-          About DEW
-          <span className="ml-2 text-sm md:text-lg font-normal text-gray-500">
-            Diving into the future of search
-          </span>
-        </h1>
-        <div className="w-24"></div> {/* Spacer for centering */}
+    <div className="min-h-screen flex flex-col">
+      {/* Header */}
+      <header className={`sticky top-0 z-10 backdrop-blur-md bg-white/90 dark:bg-black/90 border-b border-gray-200 dark:border-gray-800 ${loaded ? 'animate-fade-in' : 'opacity-0'}`}>
+        <div className="container mx-auto px-4 py-4 flex items-center justify-between">
+          <Link to="/" className="flex items-center gap-2 text-primary hover:opacity-90 transition-opacity">
+            <ChevronLeft size={18} />
+            <span>Back to Dew Search</span>
+          </Link>
+          <h1 className="text-xl font-semibold">About Dairy Inc.</h1>
+        </div>
       </header>
-
-      <main className="flex-1 p-4 md:p-8">
-        <div className="max-w-4xl mx-auto transition-all duration-500 ease-in-out transform">
-          <div
-            className={`bg-white rounded-xl shadow-md overflow-hidden transition-opacity duration-700 ${
-              showContent ? "opacity-100" : "opacity-0"
-            }`}
-          >
-            <div className="h-48 bg-gradient-to-r from-blue-500 to-blue-600 flex items-center justify-center p-8 text-white">
-              <div className="text-center">
-                <h2 className="text-3xl md:text-4xl font-bold mb-2">
-                  Reimagining Search
-                </h2>
-                <p className="text-lg md:text-xl text-blue-100">
-                  Connecting humanity to knowledge, one drop at a time
-                </p>
-              </div>
-            </div>
-
-            <Tabs
-              defaultValue="mission"
-              value={activeTab}
-              onValueChange={setActiveTab}
-              className="p-6"
-            >
-              <TabsList className="grid grid-cols-5 mb-8">
-                <TabsTrigger value="mission" className="flex items-center gap-2">
-                  <Target className="h-4 w-4" />
-                  <span className="hidden sm:inline">Our Mission</span>
-                </TabsTrigger>
-                <TabsTrigger value="search" className="flex items-center gap-2">
-                  <Search className="h-4 w-4" />
-                  <span className="hidden sm:inline">What is Search?</span>
-                </TabsTrigger>
-                <TabsTrigger value="technology" className="flex items-center gap-2">
-                  <Lightbulb className="h-4 w-4" />
-                  <span className="hidden sm:inline">Technology</span>
-                </TabsTrigger>
-                <TabsTrigger value="team" className="flex items-center gap-2">
-                  <Users className="h-4 w-4" />
-                  <span className="hidden sm:inline">Our Team</span>
-                </TabsTrigger>
-                <TabsTrigger value="platforms" className="flex items-center gap-2">
-                  <Monitor className="h-4 w-4" />
-                  <span className="hidden sm:inline">Platforms</span>
-                </TabsTrigger>
-              </TabsList>
-
-              {/* Mission tab content */}
-              <TabsContent
-                value="mission"
-                className="bg-blue-50/50 rounded-lg p-6 animate-fadeIn"
-              >
-                <div className="flex flex-col md:flex-row items-center gap-6">
-                  <div className="md:w-1/3 flex justify-center">
-                    <div className="w-48 h-48 rounded-full bg-gradient-to-br from-blue-400 to-blue-600 flex items-center justify-center">
-                      <Globe className="h-24 w-24 text-white" />
-                    </div>
+      
+      {/* Main Content */}
+      <main className="flex-1 container mx-auto px-4 py-8">
+        <div className={`max-w-4xl mx-auto ${loaded ? 'animate-fade-up' : 'opacity-0 translate-y-10'}`} style={{ transitionDelay: '0.2s' }}>
+          <Tabs defaultValue="mission" value={activeTab} onValueChange={setActiveTab} className="w-full">
+            <TabsList className="grid grid-cols-4 mb-8">
+              <TabsTrigger value="mission">Our Mission</TabsTrigger>
+              <TabsTrigger value="search">What is Search?</TabsTrigger>
+              <TabsTrigger value="platforms">Platforms</TabsTrigger>
+              <TabsTrigger value="cool-again">Making Search Cool Again</TabsTrigger>
+            </TabsList>
+            
+            <TabsContent value="mission" className="space-y-6">
+              <h2 className="text-3xl font-bold mb-4 text-primary">Our Mission</h2>
+              
+              <section className="prose prose-lg max-w-none dark:prose-invert">
+                <p>At Dairy Inc., we believe that search should be a delightful experience. Our mission is to provide a clean, fast, and intuitive search engine that respects your privacy while delivering the most relevant results.</p>
+                
+                <div className="my-8 p-6 bg-gradient-to-r from-purple-50 to-blue-50 dark:from-purple-950/30 dark:to-blue-950/30 rounded-lg border border-blue-100 dark:border-blue-900">
+                  <h3 className="text-xl font-semibold mb-2">Our Core Values</h3>
+                  <ul className="space-y-4 mt-4">
+                    <li className="flex items-start gap-3">
+                      <div className="mt-1 p-1 rounded-full bg-primary/10 text-primary">
+                        <Search size={20} />
+                      </div>
+                      <div>
+                        <strong>Simplicity.</strong> We believe in clean, uncluttered interfaces that put your search needs first.
+                      </div>
+                    </li>
+                    <li className="flex items-start gap-3">
+                      <div className="mt-1 p-1 rounded-full bg-primary/10 text-primary">
+                        <Lock size={20} />
+                      </div>
+                      <div>
+                        <strong>Privacy.</strong> Your search data belongs to you. We don't track, store, or sell your personal information.
+                      </div>
+                    </li>
+                    <li className="flex items-start gap-3">
+                      <div className="mt-1 p-1 rounded-full bg-primary/10 text-primary">
+                        <Code size={20} />
+                      </div>
+                      <div>
+                        <strong>Innovation.</strong> We're constantly exploring new ways to improve the search experience.
+                      </div>
+                    </li>
+                    <li className="flex items-start gap-3">
+                      <div className="mt-1 p-1 rounded-full bg-primary/10 text-primary">
+                        <Rocket size={20} />
+                      </div>
+                      <div>
+                        <strong>Speed.</strong> We understand that time is valuable, so we aim to deliver results lightning fast.
+                      </div>
+                    </li>
+                  </ul>
+                </div>
+                
+                <p>Founded in 2023, Dairy Inc. has grown from a small startup to a beloved search alternative that users around the world count on daily. Our team is passionate about creating a search experience that prioritizes people over profits.</p>
+                
+                <blockquote className="italic border-l-4 border-primary pl-4 my-6">
+                  "We're not just building another search engine; we're reimagining what search can be in the modern web."
+                  <footer className="text-right mt-2">— Dairy Inc. Founder</footer>
+                </blockquote>
+              </section>
+            </TabsContent>
+            
+            <TabsContent value="search" className="space-y-6">
+              <h2 className="text-3xl font-bold mb-4 text-primary">What is Search?</h2>
+              
+              <section className="prose prose-lg max-w-none dark:prose-invert">
+                <p>Search is the gateway to human knowledge. It's how we navigate the vast ocean of information that is the internet. But search is more than just typing keywords and getting links—it's about finding answers, discovering new perspectives, and connecting with the world around us.</p>
+                
+                <h3 className="text-xl font-semibold mt-6">The Evolution of Search</h3>
+                <p>Search engines have evolved dramatically over the past few decades. From basic keyword matching to sophisticated algorithms that understand context, intent, and even emotion, search technology continues to advance at a rapid pace.</p>
+                
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 my-8">
+                  <div className="p-6 bg-blue-50 dark:bg-blue-950/30 rounded-lg border border-blue-100 dark:border-blue-900">
+                    <h4 className="font-bold mb-2">Then</h4>
+                    <ul className="list-disc pl-5 space-y-2">
+                      <li>Simple keyword matching</li>
+                      <li>Basic ranking algorithms</li>
+                      <li>Text-only results</li>
+                      <li>Limited understanding of queries</li>
+                    </ul>
                   </div>
-                  <div className="md:w-2/3 space-y-4">
-                    <h3 className="text-2xl font-bold text-blue-800">Our Mission</h3>
-                    <p className="text-gray-700">
-                      At Dairy Inc., we believe that access to information is a fundamental right. 
-                      Our mission is to organize the world's information and make it universally 
-                      accessible and useful through our revolutionary DEW search engine.
-                    </p>
-                    <p className="text-gray-700">
-                      Like dewdrops that nourish the earth, we aim to provide refreshing clarity 
-                      in a sea of information. We're committed to creating a search experience 
-                      that is intuitive, accurate, and respectful of user privacy.
-                    </p>
-                    <p className="text-gray-700">
-                      We strive to be more than just a search engine – we want to be the bridge 
-                      that connects people to the knowledge they seek, empowering individuals to 
-                      learn, grow, and make informed decisions.
-                    </p>
+                  
+                  <div className="p-6 bg-primary/10 rounded-lg border border-primary/20">
+                    <h4 className="font-bold mb-2">Now</h4>
+                    <ul className="list-disc pl-5 space-y-2">
+                      <li>Context-aware results</li>
+                      <li>Natural language processing</li>
+                      <li>Multimedia content</li>
+                      <li>Personalized experiences</li>
+                    </ul>
+                  </div>
+                  
+                  <div className="p-6 bg-purple-50 dark:bg-purple-950/30 rounded-lg border border-purple-100 dark:border-purple-900">
+                    <h4 className="font-bold mb-2">Future</h4>
+                    <ul className="list-disc pl-5 space-y-2">
+                      <li>Predictive search</li>
+                      <li>Visual and voice search</li>
+                      <li>Integrated AI assistants</li>
+                      <li>Immersive search experiences</li>
+                    </ul>
                   </div>
                 </div>
-              </TabsContent>
-
-              {/* Search tab content */}
-              <TabsContent
-                value="search"
-                className="bg-blue-50/50 rounded-lg p-6 animate-fadeIn"
-              >
-                <div className="flex flex-col md:flex-row items-center gap-6">
-                  <div className="md:w-1/3 flex justify-center">
-                    <div className="w-48 h-48 rounded-full bg-gradient-to-br from-blue-400 to-blue-600 flex items-center justify-center">
-                      <Search className="h-24 w-24 text-white" />
+                
+                <h3 className="text-xl font-semibold mt-6">How Dew Search is Different</h3>
+                <p>At Dairy Inc., we believe that the best search experience is one that respects your intelligence. We don't hide results behind ads, manipulate rankings for profit, or track your every move. Instead, we focus on delivering the most relevant, useful information as quickly and clearly as possible.</p>
+                
+                <p>Our unique approach combines cutting-edge technology with human-centered design principles to create a search experience that feels both powerful and personal.</p>
+                
+                <div className="my-8 p-6 bg-gradient-to-r from-green-50 to-blue-50 dark:from-green-950/30 dark:to-blue-950/30 rounded-lg border border-blue-100 dark:border-blue-900">
+                  <h3 className="text-xl font-semibold mb-2">Key Features of Dew Search</h3>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
+                    <div className="flex items-start gap-3">
+                      <div className="mt-1 p-1 rounded-full bg-primary/10 text-primary">
+                        <BarChart size={20} />
+                      </div>
+                      <div>
+                        <strong>Clean Results.</strong> No sponsored links cluttering your view, just pure organic results.
+                      </div>
+                    </div>
+                    <div className="flex items-start gap-3">
+                      <div className="mt-1 p-1 rounded-full bg-primary/10 text-primary">
+                        <Lock size={20} />
+                      </div>
+                      <div>
+                        <strong>Privacy-First.</strong> We don't track or store your personal search history.
+                      </div>
+                    </div>
+                    <div className="flex items-start gap-3">
+                      <div className="mt-1 p-1 rounded-full bg-primary/10 text-primary">
+                        <Rocket size={20} />
+                      </div>
+                      <div>
+                        <strong>Lightning Fast.</strong> Optimized for speed, even on slower connections.
+                      </div>
+                    </div>
+                    <div className="flex items-start gap-3">
+                      <div className="mt-1 p-1 rounded-full bg-primary/10 text-primary">
+                        <Code size={20} />
+                      </div>
+                      <div>
+                        <strong>Intelligent Understanding.</strong> Our algorithms understand context and intent.
+                      </div>
                     </div>
                   </div>
-                  <div className="md:w-2/3 space-y-4">
-                    <h3 className="text-2xl font-bold text-blue-800">What is Search?</h3>
-                    <p className="text-gray-700">
-                      Search is the art and science of finding information in a vast sea of data. 
-                      It's about understanding human intent, processing language, and delivering 
-                      the most relevant answers to questions both simple and complex.
-                    </p>
-                    <p className="text-gray-700">
-                      Great search isn't just about matching keywords – it's about understanding context, 
-                      anticipating needs, and connecting users with information that truly helps them. 
-                      At DEW, we're pioneering new approaches to search that are more intuitive and helpful.
-                    </p>
-                    <p className="text-gray-700">
-                      In a world overflowing with information, effective search is the compass that 
-                      guides us through the noise to find what matters most. It's the invisible 
-                      infrastructure that makes the internet truly usable.
-                    </p>
-                  </div>
                 </div>
-              </TabsContent>
-
-              {/* Technology tab content */}
-              <TabsContent
-                value="technology"
-                className="bg-blue-50/50 rounded-lg p-6 animate-fadeIn"
-              >
-                <div className="flex flex-col md:flex-row items-center gap-6">
-                  <div className="md:w-1/3 flex justify-center">
-                    <div className="w-48 h-48 rounded-full bg-gradient-to-br from-blue-400 to-blue-600 flex items-center justify-center">
-                      <Lightbulb className="h-24 w-24 text-white" />
-                    </div>
-                  </div>
-                  <div className="md:w-2/3 space-y-4">
-                    <h3 className="text-2xl font-bold text-blue-800">Our Technology</h3>
-                    <p className="text-gray-700">
-                      DEW's search technology is built on three core principles: speed, accuracy, and insight. 
-                      Our proprietary algorithms analyze billions of web pages to find exactly what you're 
-                      looking for in milliseconds.
-                    </p>
-                    <p className="text-gray-700">
-                      We've pioneered advanced natural language processing that understands queries the way 
-                      humans naturally ask questions. Our semantic search capabilities go beyond keywords 
-                      to grasp the true intent behind your searches.
-                    </p>
-                    <p className="text-gray-700">
-                      The heart of DEW is our Hyper-Relevance Engine™, which continuously learns from user 
-                      interactions to improve results. And with features like "I'm Feeling Right," we're 
-                      adding a touch of serendipity to discovery.
-                    </p>
-                  </div>
-                </div>
-              </TabsContent>
-
-              {/* Team tab content */}
-              <TabsContent
-                value="team"
-                className="bg-blue-50/50 rounded-lg p-6 animate-fadeIn"
-              >
-                <div className="flex flex-col md:flex-row items-center gap-6">
-                  <div className="md:w-1/3 flex justify-center">
-                    <div className="w-48 h-48 rounded-full bg-gradient-to-br from-blue-400 to-blue-600 flex items-center justify-center">
-                      <Users className="h-24 w-24 text-white" />
-                    </div>
-                  </div>
-                  <div className="md:w-2/3 space-y-4">
-                    <h3 className="text-2xl font-bold text-blue-800">Our Team</h3>
-                    <p className="text-gray-700">
-                      The DEW team brings together visionaries, engineers, and information scientists united 
-                      by a common goal: to build the world's most helpful search engine. Our diverse team spans 
-                      the globe, bringing perspectives from all walks of life.
-                    </p>
-                    <p className="text-gray-700">
-                      Led by our founder Dr. Emma Waters, a pioneer in information retrieval theory, our team 
-                      combines deep technical expertise with a profound understanding of human curiosity and 
-                      how people seek knowledge.
-                    </p>
-                    <p className="text-gray-700">
-                      We believe that the best search experiences come from teams that value both technical 
-                      excellence and human empathy. Every DEW team member is dedicated to understanding the 
-                      questions behind your questions.
-                    </p>
-                  </div>
-                </div>
-              </TabsContent>
-
-              {/* Platforms tab content - NEW SECTION */}
-              <TabsContent
-                value="platforms"
-                className="bg-blue-50/50 rounded-lg p-6 animate-fadeIn"
-              >
-                <h3 className="text-2xl font-bold text-blue-800 mb-6">DEW on All Platforms</h3>
-                <p className="text-gray-700 mb-8">
-                  DEW works seamlessly across all your devices, providing a consistent and intuitive search 
-                  experience whether you're on your phone, tablet, or computer. See how DEW adapts to different 
-                  platforms while maintaining the same powerful search capabilities:
-                </p>
-
-                <Carousel className="w-full mb-8">
-                  <CarouselContent>
-                    {/* Mobile experience */}
-                    <CarouselItem className="md:basis-1/2">
-                      <div className="bg-gradient-to-br from-blue-100 to-blue-200 p-6 rounded-xl h-full">
-                        <div className="flex flex-col items-center">
-                          <Smartphone className="h-12 w-12 text-blue-600 mb-4 animate-float" />
-                          <h4 className="text-xl font-semibold text-blue-800 mb-3">Mobile Experience</h4>
-                          <div className="relative w-52 h-96 bg-gray-800 rounded-3xl p-2 shadow-xl mx-auto overflow-hidden">
-                            <div className="absolute top-0 w-24 h-6 bg-gray-800 rounded-b-xl left-1/2 transform -translate-x-1/2 z-10"></div>
-                            <div className="h-full w-full bg-gradient-to-br from-blue-50 to-white rounded-2xl overflow-hidden flex flex-col">
-                              <div className="h-10 bg-blue-500 flex items-center justify-center">
-                                <p className="text-white text-xs font-medium">DEW Mobile</p>
-                              </div>
-                              <div className="p-2 flex-1 flex flex-col">
-                                <div className="mb-2 w-full h-8 bg-white rounded-full shadow-sm flex items-center px-2">
-                                  <Search className="h-3 w-3 text-blue-500 mr-1" />
-                                  <div className="h-3 w-24 bg-gray-200 rounded-full"></div>
-                                </div>
-                                <div className="flex-1 space-y-1.5 overflow-hidden">
-                                  <div className="h-5 w-full bg-gray-100 rounded animate-pulse"></div>
-                                  <div className="h-5 w-11/12 bg-gray-100 rounded animate-pulse" style={{animationDelay: "0.1s"}}></div>
-                                  <div className="h-5 w-10/12 bg-gray-100 rounded animate-pulse" style={{animationDelay: "0.2s"}}></div>
-                                  <div className="h-10 w-full bg-blue-50 rounded-lg mt-2"></div>
-                                  <div className="h-10 w-full bg-blue-50 rounded-lg"></div>
-                                  <div className="h-10 w-full bg-blue-50 rounded-lg"></div>
-                                </div>
+              </section>
+            </TabsContent>
+            
+            <TabsContent value="platforms" className="space-y-6">
+              <h2 className="text-3xl font-bold mb-4 text-primary">Dew Search Across Platforms</h2>
+              
+              <section className="prose prose-lg max-w-none dark:prose-invert">
+                <p>Experience the magic of Dew Search on any device. Our platform is designed to work seamlessly whether you're on a phone, tablet, or computer.</p>
+                
+                <div className="my-8 grid grid-cols-1 md:grid-cols-3 gap-8">
+                  {/* iPhone Platform */}
+                  <div className="relative group">
+                    <div className="bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-950/30 dark:to-indigo-950/30 p-6 rounded-xl border border-blue-100 dark:border-blue-900 transition-transform duration-500 group-hover:scale-105">
+                      <div className="flex justify-center mb-4">
+                        <div className="w-48 h-96 bg-black rounded-[3rem] border-[6px] border-gray-800 relative overflow-hidden shadow-xl">
+                          <div className="absolute top-0 w-24 h-6 bg-black rounded-b-xl left-1/2 transform -translate-x-1/2"></div>
+                          <div className="w-full h-full bg-white p-2 overflow-hidden">
+                            <div className="animate-float">
+                              <div className="w-full h-6 bg-primary rounded-full mb-4"></div>
+                              <div className="w-3/4 h-4 bg-gray-200 rounded-full mb-3"></div>
+                              <div className="w-full h-10 bg-gray-100 rounded-lg mb-4"></div>
+                              <div className="space-y-2">
+                                <div className="w-full h-20 bg-blue-50 rounded-lg"></div>
+                                <div className="w-full h-20 bg-blue-50 rounded-lg"></div>
+                                <div className="w-full h-20 bg-blue-50 rounded-lg"></div>
                               </div>
                             </div>
                           </div>
-                          <p className="text-gray-700 mt-4 text-center text-sm">
-                            On mobile, DEW optimizes for touchscreens with larger buttons, simplified results,
-                            and voice search capabilities designed for on-the-go information seeking.
-                          </p>
                         </div>
                       </div>
-                    </CarouselItem>
-                    
-                    {/* Desktop experience */}
-                    <CarouselItem className="md:basis-1/2">
-                      <div className="bg-gradient-to-br from-purple-100 to-purple-200 p-6 rounded-xl h-full">
-                        <div className="flex flex-col items-center">
-                          <Laptop className="h-12 w-12 text-purple-600 mb-4 animate-float" />
-                          <h4 className="text-xl font-semibold text-purple-800 mb-3">Desktop Experience</h4>
-                          <div className="relative w-64 h-44 bg-gray-800 rounded-lg p-2 shadow-xl mx-auto overflow-hidden">
-                            <div className="h-full w-full bg-gradient-to-br from-blue-50 to-white rounded overflow-hidden flex flex-col">
-                              <div className="h-5 bg-gray-200 flex items-center px-2">
-                                <div className="flex space-x-1">
-                                  <div className="w-2 h-2 rounded-full bg-red-500"></div>
-                                  <div className="w-2 h-2 rounded-full bg-yellow-500"></div>
-                                  <div className="w-2 h-2 rounded-full bg-green-500"></div>
-                                </div>
-                              </div>
-                              <div className="p-2 flex-1 flex flex-col">
-                                <div className="mb-2 flex justify-center">
-                                  <div className="w-40 h-6 bg-white rounded-full shadow-sm flex items-center px-2">
-                                    <Search className="h-3 w-3 text-blue-500 mr-1" />
-                                    <div className="h-2 w-20 bg-gray-200 rounded-full"></div>
-                                  </div>
-                                </div>
-                                <div className="flex-1 grid grid-cols-2 gap-1 overflow-hidden">
-                                  <div className="col-span-2 h-4 w-full bg-gray-100 rounded animate-pulse"></div>
-                                  <div className="h-4 w-full bg-gray-100 rounded animate-pulse" style={{animationDelay: "0.1s"}}></div>
-                                  <div className="h-4 w-full bg-gray-100 rounded animate-pulse" style={{animationDelay: "0.2s"}}></div>
-                                  <div className="col-span-2 h-6 w-full bg-blue-50 rounded-lg mt-1"></div>
-                                  <div className="col-span-2 h-6 w-full bg-blue-50 rounded-lg"></div>
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                          <p className="text-gray-700 mt-4 text-center text-sm">
-                            The desktop version provides a full-featured experience with advanced filters, 
-                            side panels for deeper exploration, and keyboard shortcuts for power users.
-                          </p>
-                        </div>
-                      </div>
-                    </CarouselItem>
-                    
-                    {/* Tablet/Windows experience */}
-                    <CarouselItem className="md:basis-1/2">
-                      <div className="bg-gradient-to-br from-green-100 to-green-200 p-6 rounded-xl h-full">
-                        <div className="flex flex-col items-center">
-                          <Monitor className="h-12 w-12 text-green-600 mb-4 animate-float" />
-                          <h4 className="text-xl font-semibold text-green-800 mb-3">Windows Experience</h4>
-                          <div className="relative w-64 h-44 bg-blue-800 rounded-lg shadow-xl mx-auto overflow-hidden border-2 border-blue-600">
-                            <div className="h-6 bg-blue-700 flex items-center justify-between px-2">
-                              <div className="flex items-center">
-                                <div className="w-3 h-3 rounded-sm bg-white mr-2"></div>
-                                <p className="text-white text-xs">DEW for Windows</p>
-                              </div>
-                              <div className="flex space-x-2">
-                                <div className="w-3 h-3 text-white">−</div>
-                                <div className="w-3 h-3 text-white">□</div>
-                                <div className="w-3 h-3 text-white">×</div>
-                              </div>
-                            </div>
-                            <div className="p-2 bg-white flex-1 flex flex-col h-[calc(100%-24px)]">
-                              <div className="flex justify-center mb-2">
-                                <div className="w-40 h-6 bg-blue-100 rounded flex items-center px-2">
-                                  <Search className="h-3 w-3 text-blue-700 mr-1" />
-                                  <div className="h-2 w-24 bg-blue-200 rounded-full"></div>
-                                </div>
-                              </div>
-                              <div className="grid grid-cols-3 gap-1 flex-1">
-                                <div className="bg-blue-50 p-1 rounded text-xs text-center">Images</div>
-                                <div className="bg-blue-50 p-1 rounded text-xs text-center">News</div>
-                                <div className="bg-blue-50 p-1 rounded text-xs text-center">Maps</div>
-                                <div className="col-span-3 h-4 w-full bg-gray-100 rounded-sm animate-pulse"></div>
-                                <div className="col-span-3 h-4 w-11/12 bg-gray-100 rounded-sm animate-pulse" style={{animationDelay: "0.1s"}}></div>
-                                <div className="col-span-3 h-4 w-10/12 bg-gray-100 rounded-sm animate-pulse" style={{animationDelay: "0.2s"}}></div>
-                              </div>
-                            </div>
-                          </div>
-                          <p className="text-gray-700 mt-4 text-center text-sm">
-                            The Windows app integrates with the operating system, allowing for instant search 
-                            from the taskbar and custom Windows-specific features like file searching and PC settings access.
-                          </p>
-                        </div>
-                      </div>
-                    </CarouselItem>
-                  </CarouselContent>
-                  <div className="flex justify-center mt-4">
-                    <CarouselPrevious className="static transform-none mx-2 bg-blue-100 hover:bg-blue-200" />
-                    <CarouselNext className="static transform-none mx-2 bg-blue-100 hover:bg-blue-200" />
+                      <h3 className="text-xl font-bold text-center mt-4">iPhone</h3>
+                      <p className="text-center text-sm mt-2">Optimized for one-handed navigation and gesture controls, making search on-the-go a breeze.</p>
+                    </div>
                   </div>
-                </Carousel>
+                  
+                  {/* Android Platform */}
+                  <div className="relative group">
+                    <div className="bg-gradient-to-br from-green-50 to-emerald-50 dark:from-green-950/30 dark:to-emerald-950/30 p-6 rounded-xl border border-green-100 dark:border-green-900 transition-transform duration-500 group-hover:scale-105">
+                      <div className="flex justify-center mb-4">
+                        <div className="w-48 h-96 bg-gray-800 rounded-2xl border-[6px] border-gray-700 relative overflow-hidden shadow-xl">
+                          <div className="absolute top-4 left-1/2 transform -translate-x-1/2 w-24 h-2 bg-gray-700 rounded-full"></div>
+                          <div className="w-full h-full bg-white p-2 overflow-hidden">
+                            <div className="animate-float" style={{ animationDelay: '0.5s' }}>
+                              <div className="w-full h-6 bg-green-500 rounded-full mb-4"></div>
+                              <div className="w-3/4 h-4 bg-gray-200 rounded-full mb-3"></div>
+                              <div className="w-full h-10 bg-gray-100 rounded-lg mb-4"></div>
+                              <div className="space-y-2">
+                                <div className="w-full h-20 bg-green-50 rounded-lg"></div>
+                                <div className="w-full h-20 bg-green-50 rounded-lg"></div>
+                                <div className="w-full h-20 bg-green-50 rounded-lg"></div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <h3 className="text-xl font-bold text-center mt-4">Android</h3>
+                      <p className="text-center text-sm mt-2">Customizable and versatile, with deep integration into your Android ecosystem.</p>
+                    </div>
+                  </div>
+                  
+                  {/* Windows Laptop Platform */}
+                  <div className="relative group">
+                    <div className="bg-gradient-to-br from-purple-50 to-violet-50 dark:from-purple-950/30 dark:to-violet-950/30 p-6 rounded-xl border border-purple-100 dark:border-purple-900 transition-transform duration-500 group-hover:scale-105">
+                      <div className="flex justify-center mb-4">
+                        <div className="w-64 h-44 bg-gray-800 rounded-lg border-[4px] border-gray-700 relative overflow-hidden shadow-xl">
+                          <div className="w-full h-full bg-white p-2">
+                            <div className="animate-float" style={{ animationDelay: '1s' }}>
+                              <div className="w-full h-4 bg-purple-500 rounded-full mb-2"></div>
+                              <div className="w-3/4 h-3 bg-gray-200 rounded-full mb-2"></div>
+                              <div className="w-full h-6 bg-gray-100 rounded-lg mb-2"></div>
+                              <div className="grid grid-cols-2 gap-2">
+                                <div className="h-10 bg-purple-50 rounded-lg"></div>
+                                <div className="h-10 bg-purple-50 rounded-lg"></div>
+                                <div className="h-10 bg-purple-50 rounded-lg"></div>
+                                <div className="h-10 bg-purple-50 rounded-lg"></div>
+                              </div>
+                            </div>
+                          </div>
+                          <div className="w-72 h-2 bg-gray-700 absolute -bottom-1 left-1/2 transform -translate-x-1/2"></div>
+                        </div>
+                        <div className="w-72 h-8 bg-gray-700 rounded-b-lg mt-0"></div>
+                      </div>
+                      <h3 className="text-xl font-bold text-center mt-4">Windows Laptop</h3>
+                      <p className="text-center text-sm mt-2">Full-featured with keyboard shortcuts and a research-optimized interface for productive searching.</p>
+                    </div>
+                  </div>
+                </div>
+                
+                <h3 className="text-xl font-semibold mt-6">Cross-Platform Features</h3>
+                <p>No matter which device you use, Dew Search offers a consistent and delightful experience with features like:</p>
+                
+                <ul className="list-disc pl-6 space-y-2 my-4">
+                  <li><strong>Synchronized Searches:</strong> Start a search on your phone and continue on your laptop seamlessly.</li>
+                  <li><strong>Responsive Design:</strong> Automatically adapts to your screen size and orientation.</li>
+                  <li><strong>Device-Specific Optimizations:</strong> Touch-friendly on mobile, keyboard-focused on desktop.</li>
+                  <li><strong>Offline Capabilities:</strong> Save search results for later, even without an internet connection.</li>
+                </ul>
+                
+                <div className="p-6 bg-gradient-to-r from-yellow-50 to-amber-50 dark:from-yellow-950/30 dark:to-amber-950/30 rounded-lg border border-amber-100 dark:border-amber-900 my-8">
+                  <h3 className="text-xl font-semibold mb-2">Coming Soon</h3>
+                  <p className="mb-4">We're working on exciting new platform-specific features:</p>
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div className="bg-white dark:bg-gray-800 p-4 rounded-lg shadow-sm">
+                      <h4 className="font-semibold">Voice Search 2.0</h4>
+                      <p className="text-sm mt-1">Enhanced natural language understanding across all devices.</p>
+                    </div>
+                    <div className="bg-white dark:bg-gray-800 p-4 rounded-lg shadow-sm">
+                      <h4 className="font-semibold">AR Search Overlay</h4>
+                      <p className="text-sm mt-1">Point your camera at objects to search for related information.</p>
+                    </div>
+                    <div className="bg-white dark:bg-gray-800 p-4 rounded-lg shadow-sm">
+                      <h4 className="font-semibold">Gesture Controls</h4>
+                      <p className="text-sm mt-1">Navigate search results with intuitive gestures on touchscreens.</p>
+                    </div>
+                  </div>
+                </div>
+              </section>
+            </TabsContent>
 
-                <div className="bg-white rounded-lg shadow-md p-6 mt-8">
-                  <h4 className="text-xl font-bold text-red-600 mb-4">Why Google's Search Has Declined</h4>
+            <TabsContent value="cool-again" className="space-y-6">
+              <h2 className="text-3xl font-bold mb-4 text-primary">Making Search Cool Again</h2>
+              
+              <section className="prose prose-lg max-w-none dark:prose-invert">
+                <p>Remember when search engines were exciting? When Google and Yahoo first arrived, they revolutionized how we accessed information. They were clean, fast, and focused on delivering the best results—not the most profitable ones.</p>
+
+                <div className="my-8 p-6 bg-gradient-to-r from-red-50 to-orange-50 dark:from-red-950/30 dark:to-orange-950/30 rounded-lg border border-orange-100 dark:border-orange-900">
+                  <h3 className="text-xl font-semibold mb-4">What Happened to Search?</h3>
                   <div className="space-y-4">
-                    <p className="text-gray-700">
-                      Google was once a breath of fresh air in the search world – clean, fast, and focused on delivering the 
-                      most relevant results. But over time, things have changed:
-                    </p>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      <div className="bg-red-50 p-4 rounded-lg">
-                        <h5 className="font-semibold text-red-800 mb-2">Prioritizing Ads Over Results</h5>
-                        <p className="text-gray-600 text-sm">
-                          Today's Google search results are dominated by paid placements, pushing organic results further down 
-                          the page and making it harder to find genuine information.
-                        </p>
-                      </div>
-                      <div className="bg-red-50 p-4 rounded-lg">
-                        <h5 className="font-semibold text-red-800 mb-2">Cluttered User Experience</h5>
-                        <p className="text-gray-600 text-sm">
-                          The once-clean interface has become crowded with features, widgets, and distractions that detract 
-                          from the core search experience.
-                        </p>
-                      </div>
-                      <div className="bg-red-50 p-4 rounded-lg">
-                        <h5 className="font-semibold text-red-800 mb-2">Privacy Concerns</h5>
-                        <p className="text-gray-600 text-sm">
-                          Google's business model relies on collecting vast amounts of user data, raising serious privacy 
-                          concerns and eroding trust in the platform.
-                        </p>
-                      </div>
-                      <div className="bg-red-50 p-4 rounded-lg">
-                        <h5 className="font-semibold text-red-800 mb-2">Gaming The System</h5>
-                        <p className="text-gray-600 text-sm">
-                          SEO-optimized content often ranks higher than genuinely useful information, resulting in 
-                          formulaic content designed to please algorithms rather than users.
-                        </p>
-                      </div>
-                    </div>
-                    <p className="text-gray-700 pt-2">
-                      At DEW, we're building something different – a search engine that respects your privacy, 
-                      prioritizes genuine information over paid placements, and delivers a clean, focused 
-                      experience that puts you in control of your information journey.
-                    </p>
+                    <p>Over time, major search engines have lost their way:</p>
+                    <ul className="list-disc pl-6 space-y-3">
+                      <li>
+                        <strong>Ads Everywhere:</strong> The first several results are often paid placements, pushing organic results below the fold.
+                      </li>
+                      <li>
+                        <strong>Cluttered Interfaces:</strong> What began as clean, simple designs have become crowded with widgets, promotions, and distractions.
+                      </li>
+                      <li>
+                        <strong>Privacy Concerns:</strong> Your search history is tracked, analyzed, and monetized through targeted advertising.
+                      </li>
+                      <li>
+                        <strong>SEO Gaming:</strong> Results are increasingly dominated by content optimized for algorithms rather than humans.
+                      </li>
+                      <li>
+                        <strong>Filter Bubbles:</strong> Personalization algorithms show you what they think you want to see, limiting exposure to diverse perspectives.
+                      </li>
+                    </ul>
                   </div>
                 </div>
-              </TabsContent>
-            </Tabs>
-          </div>
-
-          <div className="mt-12 grid grid-cols-1 md:grid-cols-3 gap-6">
-            {/* Feature cards */}
-            <FeatureCard
-              icon={<Book className="h-8 w-8 text-blue-600" />}
-              title="Knowledge First"
-              description="We believe information should be accessible to everyone, regardless of where they are or what device they use."
-              delay={0.1}
-              show={showContent}
-            />
-            <FeatureCard
-              icon={<Target className="h-8 w-8 text-blue-600" />}
-              title="Privacy Focused"
-              description="Your searches are yours alone. We're committed to industry-leading privacy practices."
-              delay={0.2}
-              show={showContent}
-            />
-            <FeatureCard
-              icon={<Info className="h-8 w-8 text-blue-600" />}
-              title="Constantly Evolving"
-              description="Search is never 'solved.' We're always improving, learning, and adapting to serve you better."
-              delay={0.3}
-              show={showContent}
-            />
-          </div>
-
-          <div className="mt-12 bg-white rounded-xl shadow-md overflow-hidden transition-opacity duration-700 ease-in-out transform">
-            <div className="p-6 md:p-8">
-              <h3 className="text-2xl font-bold text-blue-800 mb-4">Why DEW Is Different</h3>
-              <div className="space-y-4">
-                <p className="text-gray-700">
-                  In a world of search engines that try to be everything to everyone, DEW takes a different approach. 
-                  We focus on delivering the most relevant results with minimal distractions. Our clean interface puts 
-                  the focus where it belongs: on your search journey.
-                </p>
-                <p className="text-gray-700">
-                  We're also committed to sustainability – both digital and environmental. That's why we created DEWSS, 
-                  our water conservation game, to raise awareness about preserving Earth's most precious resource.
-                </p>
-                <p className="text-gray-700">
-                  With features like our seasonal Dewdols and our "I'm Feeling Right" surprise discovery tool, we're 
-                  bringing a sense of delight back to search. Because finding what you're looking for should be not just 
-                  efficient, but enjoyable.
-                </p>
-                <p className="text-gray-700">
-                  But most importantly, we believe search is about empowering people. Whether you're researching for school, 
-                  exploring a new hobby, or making an important life decision, DEW is here to help you find your way.
-                </p>
-              </div>
-            </div>
-          </div>
+                
+                <blockquote className="italic border-l-4 border-primary pl-4 my-6">
+                  "Google was fresh and cool but now they suck in everything. We're here to make search cool again."
+                  <footer className="text-right mt-2">— Dairy Inc. Team</footer>
+                </blockquote>
+                
+                <h3 className="text-xl font-semibold mt-8">Our Revolution</h3>
+                <p>At Dairy Inc., we're not just building another search engine—we're leading a revolution to make search exciting again:</p>
+                
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 my-8">
+                  <div className="p-6 bg-indigo-50 dark:bg-indigo-950/30 rounded-lg border border-indigo-100 dark:border-indigo-900 hover:shadow-md transition-shadow">
+                    <h4 className="font-bold text-lg mb-3">Back to Basics</h4>
+                    <p>We're returning to what made search great in the first place: simplicity, speed, and relevance. Our clean interface puts the focus where it belongs—on finding exactly what you're looking for.</p>
+                  </div>
+                  
+                  <div className="p-6 bg-emerald-50 dark:bg-emerald-950/30 rounded-lg border border-emerald-100 dark:border-emerald-900 hover:shadow-md transition-shadow">
+                    <h4 className="font-bold text-lg mb-3">Beyond Profit</h4>
+                    <p>While other search engines optimize for maximum ad revenue, we optimize for maximum user satisfaction. This means better results, fewer ads, and a more enjoyable search experience overall.</p>
+                  </div>
+                  
+                  <div className="p-6 bg-amber-50 dark:bg-amber-950/30 rounded-lg border border-amber-100 dark:border-amber-900 hover:shadow-md transition-shadow">
+                    <h4 className="font-bold text-lg mb-3">Genuine Innovation</h4>
+                    <p>We're not just copying what others have done—we're exploring new ways to make search more intuitive, more helpful, and more delightful. From our voice search to our "I'm Feeling Right" button, we're bringing fun back to search.</p>
+                  </div>
+                  
+                  <div className="p-6 bg-purple-50 dark:bg-purple-950/30 rounded-lg border border-purple-100 dark:border-purple-900 hover:shadow-md transition-shadow">
+                    <h4 className="font-bold text-lg mb-3">People-Powered</h4>
+                    <p>We believe that the best search experience comes from understanding real human needs, not just analyzing data. That's why we actively involve our community in shaping the future of Dew Search.</p>
+                  </div>
+                </div>
+                
+                <h3 className="text-xl font-semibold mt-8">Join the Movement</h3>
+                <p>We're on a mission to make search cool again, just like Google and Yahoo once did. But we can't do it alone. Every search you make with Dew helps us improve and grow our service.</p>
+                
+                <div className="my-8 p-6 bg-gradient-to-r from-pink-50 to-rose-50 dark:from-pink-950/30 dark:to-rose-950/30 rounded-lg border border-rose-100 dark:border-rose-900 text-center">
+                  <h3 className="text-xl font-semibold mb-4">Ready to rediscover the joy of search?</h3>
+                  <Link to="/" className="inline-block px-6 py-3 bg-primary text-white font-medium rounded-lg hover:bg-primary/90 transition-colors">Try Dew Search Now</Link>
+                  <p className="mt-4 text-sm">No tracking. No filter bubbles. Just great search results.</p>
+                </div>
+              </section>
+            </TabsContent>
+          </Tabs>
         </div>
       </main>
-
-      <Footer className="mt-8" />
-    </div>
-  );
-};
-
-interface FeatureCardProps {
-  icon: React.ReactNode;
-  title: string;
-  description: string;
-  delay: number;
-  show: boolean;
-}
-
-const FeatureCard = ({ icon, title, description, delay, show }: FeatureCardProps) => {
-  return (
-    <div
-      className={`bg-white rounded-lg shadow-md p-6 transition-all duration-500 ease-in-out transform ${
-        show
-          ? "opacity-100 translate-y-0"
-          : "opacity-0 translate-y-4"
-      }`}
-      style={{
-        transitionDelay: `${delay}s`,
-      }}
-    >
-      <div className="flex flex-col items-center text-center">
-        <div className="mb-4 rounded-full bg-blue-100 p-3">{icon}</div>
-        <h3 className="text-xl font-semibold text-gray-800 mb-2">{title}</h3>
-        <p className="text-gray-600">{description}</p>
-      </div>
+      
+      <Footer />
     </div>
   );
 };
