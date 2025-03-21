@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect, useRef } from 'react';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
@@ -8,19 +9,26 @@ const DewssGame = () => {
   const [isPlaying, setIsPlaying] = useState(false);
   const [score, setScore] = useState(0);
   const [waterLevel, setWaterLevel] = useState(100);
-  const [gameTime, setGameTime] = useState(30);
-  const [drops, setDrops] = useState<{ id: number; x: number; y: number; caught: boolean }[]>([]);
+  const [gameTime, setGameTime] = useState(60); // Extended game time
+  const [difficulty, setDifficulty] = useState('medium'); // Added difficulty level
+  const [drops, setDrops] = useState<{ id: number; x: number; y: number; caught: boolean; size: number }[]>([]);
   const gameAreaRef = useRef<HTMLDivElement>(null);
   const animationFrameRef = useRef<number | null>(null);
   const lastDropTime = useRef(0);
   const gameLoopRef = useRef<NodeJS.Timeout | null>(null);
   const timeCounterRef = useRef<NodeJS.Timeout | null>(null);
+  
+  const difficultySettings = {
+    easy: { dropSpeed: 2, dropRate: 0.4, waterDecrease: 0.3, missedPenalty: 1 },
+    medium: { dropSpeed: 3, dropRate: 0.6, waterDecrease: 0.5, missedPenalty: 2 },
+    hard: { dropSpeed: 4, dropRate: 0.7, waterDecrease: 0.6, missedPenalty: 3 }
+  };
 
   const startGame = () => {
     setIsPlaying(true);
     setScore(0);
     setWaterLevel(100);
-    setGameTime(30);
+    setGameTime(60); // Extended game time
     setDrops([]);
     lastDropTime.current = Date.now();
     
@@ -37,11 +45,12 @@ const DewssGame = () => {
     
     if (gameLoopRef.current) clearInterval(gameLoopRef.current);
     gameLoopRef.current = setInterval(() => {
-      if (Math.random() > 0.7) {
+      const settings = difficultySettings[difficulty as keyof typeof difficultySettings];
+      if (Math.random() > (1 - settings.dropRate)) {
         createDrop();
       }
       
-      setWaterLevel(level => Math.max(0, level - 0.5));
+      setWaterLevel(level => Math.max(0, level - settings.waterDecrease));
       
       if (waterLevel <= 0) {
         endGame();
@@ -63,6 +72,7 @@ const DewssGame = () => {
     
     const gameArea = gameAreaRef.current.getBoundingClientRect();
     const x = Math.random() * (gameArea.width - 30);
+    const size = Math.random() > 0.8 ? 'large' : 'normal';
     
     setDrops(prevDrops => [
       ...prevDrops,
@@ -70,34 +80,40 @@ const DewssGame = () => {
         id: Date.now(),
         x,
         y: 0,
-        caught: false
+        caught: false,
+        size: size === 'large' ? 10 : 8
       }
     ]);
   };
 
   const catchDrop = (id: number) => {
+    // Find the drop to check its size for bonus points
+    const caughtDrop = drops.find(drop => drop.id === id);
+    const bonus = caughtDrop?.size === 10 ? 2 : 1; // Bonus points for larger drops
+    
     setDrops(prevDrops => 
       prevDrops.map(drop => 
         drop.id === id ? { ...drop, caught: true } : drop
       )
     );
-    setScore(score => score + 1);
-    setWaterLevel(level => Math.min(100, level + 5));
+    setScore(score => score + bonus);
+    setWaterLevel(level => Math.min(100, level + (bonus * 5)));
   };
 
   const updateDrops = () => {
+    const settings = difficultySettings[difficulty as keyof typeof difficultySettings];
     setDrops(prevDrops => 
       prevDrops
         .map(drop => ({
           ...drop,
-          y: drop.y + 3,
+          y: drop.y + settings.dropSpeed,
           caught: drop.caught
         }))
         .filter(drop => {
           if (drop.caught) return false;
           
           if (drop.y > (gameAreaRef.current?.clientHeight || 400)) {
-            setWaterLevel(level => Math.max(0, level - 2));
+            setWaterLevel(level => Math.max(0, level - settings.missedPenalty));
             return false;
           }
           
@@ -113,6 +129,10 @@ const DewssGame = () => {
     };
     
     animationFrameRef.current = requestAnimationFrame(animate);
+  };
+
+  const changeDifficulty = (newDifficulty: string) => {
+    setDifficulty(newDifficulty);
   };
 
   useEffect(() => {
@@ -158,14 +178,41 @@ const DewssGame = () => {
         
         <div 
           ref={gameAreaRef}
-          className="relative h-64 bg-gradient-to-b from-blue-50 to-blue-100 rounded-md border border-blue-200 overflow-hidden"
+          className="relative h-64 bg-gradient-to-b from-blue-50 to-blue-100 rounded-md border border-blue-200 overflow-hidden mb-4"
           style={{ touchAction: 'none' }}
         >
           {!isPlaying && (
             <div className="absolute inset-0 flex flex-col items-center justify-center bg-white/80 backdrop-blur-sm">
-              <h3 className="text-xl font-semibold text-blue-800 mb-2">
+              <h3 className="text-xl font-semibold text-blue-800 mb-4">
                 {score > 0 ? `Game Over! You saved ${score} drops!` : 'Ready to save water?'}
               </h3>
+              
+              {!isPlaying && (
+                <div className="flex gap-2 mb-4">
+                  <Button 
+                    onClick={() => changeDifficulty('easy')}
+                    className={`${difficulty === 'easy' ? 'bg-green-600' : 'bg-gray-200 text-gray-700'}`}
+                    size="sm"
+                  >
+                    Easy
+                  </Button>
+                  <Button 
+                    onClick={() => changeDifficulty('medium')}
+                    className={`${difficulty === 'medium' ? 'bg-blue-600' : 'bg-gray-200 text-gray-700'}`}
+                    size="sm"
+                  >
+                    Medium
+                  </Button>
+                  <Button 
+                    onClick={() => changeDifficulty('hard')}
+                    className={`${difficulty === 'hard' ? 'bg-red-600' : 'bg-gray-200 text-gray-700'}`}
+                    size="sm"
+                  >
+                    Hard
+                  </Button>
+                </div>
+              )}
+              
               <Button 
                 onClick={startGame}
                 className="animate-pulse bg-blue-600 hover:bg-blue-700"
@@ -175,7 +222,7 @@ const DewssGame = () => {
             </div>
           )}
           
-          {drops.map(drop => (
+          {isPlaying && drops.map(drop => (
             <button
               key={drop.id}
               className="absolute p-0 bg-transparent border-none cursor-pointer"
@@ -187,11 +234,19 @@ const DewssGame = () => {
               onClick={() => catchDrop(drop.id)}
             >
               <Droplet 
-                className="h-8 w-8 text-blue-500 animate-bounce"
+                className={`text-blue-500 animate-bounce ${drop.size === 10 ? 'h-10 w-10' : 'h-8 w-8'}`}
               />
             </button>
           ))}
         </div>
+        
+        {isPlaying && (
+          <div className="text-center mb-4">
+            <span className="text-sm text-gray-600">
+              Tip: Larger drops are worth more points! Try to catch them for a water level boost.
+            </span>
+          </div>
+        )}
       </CardContent>
       
       <CardFooter className="bg-gray-50 flex flex-col text-center text-sm text-gray-600">

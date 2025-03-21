@@ -21,16 +21,16 @@ const Dewdols = () => {
   }, []);
 
   const dewdols = [
-    { id: 1, name: "Earth Day", description: "Celebrating our planet with an eco-friendly DEW design", date: "April 22" },
-    { id: 2, name: "Summer Solstice", description: "The longest day deserves the brightest DEW", date: "June 21" },
-    { id: 3, name: "New Year", description: "Ring in the new year with a sparkling DEW logo", date: "January 1" },
-    { id: 4, name: "Lunar Landing", description: "One small step for DEW, one giant leap for search engines", date: "July 20" },
-    { id: 5, name: "Valentine's Day", description: "Share your love for DEW on this special day", date: "February 14" },
-    { id: 6, name: "Halloween", description: "A spooky twist on the DEW logo that's hauntingly beautiful", date: "October 31" }
+    { id: 1, name: "Earth Day", description: "Celebrating our planet with an eco-friendly DEW design", date: "April 22", color: "from-green-400 to-green-600" },
+    { id: 2, name: "Summer Solstice", description: "The longest day deserves the brightest DEW", date: "June 21", color: "from-yellow-400 to-orange-500" },
+    { id: 3, name: "New Year", description: "Ring in the new year with a sparkling DEW logo", date: "January 1", color: "from-blue-500 to-purple-600" },
+    { id: 4, name: "Lunar Landing", description: "One small step for DEW, one giant leap for search engines", date: "July 20", color: "from-gray-500 to-gray-700" },
+    { id: 5, name: "Valentine's Day", description: "Share your love for DEW on this special day", date: "February 14", color: "from-pink-400 to-red-500" },
+    { id: 6, name: "Halloween", description: "A spooky twist on the DEW logo that's hauntingly beautiful", date: "October 31", color: "from-orange-500 to-purple-700" }
   ];
 
   const handleDewdolClick = (id: number) => {
-    setSelectedDewdol(id);
+    setSelectedDewdol(id === selectedDewdol ? null : id);
     // In a real app, this would show the specific dewdol in detail
   };
 
@@ -45,8 +45,8 @@ const Dewdols = () => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col p-6 bg-gradient-to-b from-blue-50 to-white">
-      <header className="flex items-center justify-between mb-8">
+    <div className="min-h-screen flex flex-col bg-gradient-to-b from-blue-50 to-white">
+      <header className="sticky top-0 z-10 p-4 md:p-6 flex items-center justify-between bg-white/90 backdrop-blur-sm border-b border-blue-100 shadow-sm">
         <Button 
           onClick={() => navigate('/')}
           variant="ghost" 
@@ -56,32 +56,34 @@ const Dewdols = () => {
           <ArrowLeft size={16} className="mr-2" />
           Back to DEW
         </Button>
-        <h1 className="text-3xl font-bold text-primary text-center">
+        <h1 className="text-2xl md:text-3xl font-bold text-primary">
           Dewdols
-          <span className="ml-2 text-lg font-normal text-gray-500">Special Edition Logos</span>
+          <span className="ml-2 text-sm md:text-lg font-normal text-gray-500">Special Edition Logos</span>
         </h1>
         <div className="w-24"></div> {/* Spacer for centering */}
       </header>
       
-      <main className="flex-1">
-        <div className="max-w-4xl mx-auto mb-12">
-          <div className="flex flex-col md:flex-row gap-4 items-center justify-between mb-8">
-            <p className="text-center md:text-left text-gray-600">
-              Dewdols are special versions of the DEW logo created to celebrate holidays, 
-              anniversaries, and remarkable individuals. Explore our collection below!
-            </p>
-            
-            <Button 
-              onClick={toggleGame}
-              variant="outline" 
-              className="group relative overflow-hidden bg-gradient-to-r from-blue-500 to-green-500 text-white border-0 hover:shadow-lg transition-all"
-            >
-              <span className="absolute inset-0 w-full h-full bg-gradient-to-r from-blue-400 to-green-400 group-hover:scale-110 transition-transform duration-300"></span>
-              <span className="relative z-10 flex items-center">
-                <Star size={16} className="mr-2 animate-pulse" />
-                {showGame ? 'Hide DEWSS Game' : 'Play DEWSS Game'}
-              </span>
-            </Button>
+      <main className="flex-1 p-4 md:p-6">
+        <div className="max-w-4xl mx-auto mb-8">
+          <div className="bg-white rounded-lg shadow-md p-6 mb-8">
+            <div className="flex flex-col md:flex-row gap-4 items-center justify-between">
+              <p className="text-center md:text-left text-gray-600">
+                Dewdols are special versions of the DEW logo created to celebrate holidays, 
+                anniversaries, and remarkable individuals. Explore our collection below!
+              </p>
+              
+              <Button 
+                onClick={toggleGame}
+                variant="outline" 
+                className="group relative overflow-hidden bg-gradient-to-r from-blue-500 to-green-500 text-white border-0 hover:shadow-lg transition-all"
+              >
+                <span className="absolute inset-0 w-full h-full bg-gradient-to-r from-blue-400 to-green-400 group-hover:scale-110 transition-transform duration-300"></span>
+                <span className="relative z-10 flex items-center">
+                  <Star size={16} className="mr-2 animate-pulse" />
+                  {showGame ? 'Hide DEWSS Game' : 'Play DEWSS Game'}
+                </span>
+              </Button>
+            </div>
           </div>
           
           {showGame && (
@@ -102,7 +104,7 @@ const Dewdols = () => {
                 style={{ animationDelay: `${index * 0.1}s` }}
                 onClick={() => handleDewdolClick(dewdol.id)}
               >
-                <div className="h-48 bg-gradient-to-br from-blue-400 to-blue-600 flex items-center justify-center">
+                <div className={`h-48 bg-gradient-to-br ${dewdol.color} flex items-center justify-center p-4`}>
                   <div className="text-4xl font-bold text-white">DEW</div>
                   {/* This would be replaced with actual custom logo designs */}
                 </div>
@@ -122,7 +124,7 @@ const Dewdols = () => {
         </div>
       </main>
       
-      <footer className="text-center text-gray-500 text-sm mt-12">
+      <footer className="bg-white border-t border-gray-100 py-6 text-center text-gray-500 text-sm">
         <p>Want to suggest a Dewdol? <a href="#" className="text-primary hover:underline">Contact us</a></p>
         <p className="mt-2">© 2023 DEW • All Dewdols are created with <Star size={14} className="inline text-primary mx-1" /> by our team</p>
       </footer>
