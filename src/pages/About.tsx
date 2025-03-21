@@ -1,10 +1,11 @@
 
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { ArrowLeft, Search, Globe, Lightbulb, Info, Target, Users, Book } from "lucide-react";
+import { ArrowLeft, Search, Globe, Lightbulb, Info, Target, Users, Book, Smartphone, Laptop, Monitor } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import Footer from "@/components/Footer";
+import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
 
 const About = () => {
   const [activeTab, setActiveTab] = useState("mission");
@@ -64,7 +65,7 @@ const About = () => {
               onValueChange={setActiveTab}
               className="p-6"
             >
-              <TabsList className="grid grid-cols-4 mb-8">
+              <TabsList className="grid grid-cols-5 mb-8">
                 <TabsTrigger value="mission" className="flex items-center gap-2">
                   <Target className="h-4 w-4" />
                   <span className="hidden sm:inline">Our Mission</span>
@@ -81,8 +82,13 @@ const About = () => {
                   <Users className="h-4 w-4" />
                   <span className="hidden sm:inline">Our Team</span>
                 </TabsTrigger>
+                <TabsTrigger value="platforms" className="flex items-center gap-2">
+                  <Monitor className="h-4 w-4" />
+                  <span className="hidden sm:inline">Platforms</span>
+                </TabsTrigger>
               </TabsList>
 
+              {/* Mission tab content */}
               <TabsContent
                 value="mission"
                 className="bg-blue-50/50 rounded-lg p-6 animate-fadeIn"
@@ -114,6 +120,7 @@ const About = () => {
                 </div>
               </TabsContent>
 
+              {/* Search tab content */}
               <TabsContent
                 value="search"
                 className="bg-blue-50/50 rounded-lg p-6 animate-fadeIn"
@@ -145,6 +152,7 @@ const About = () => {
                 </div>
               </TabsContent>
 
+              {/* Technology tab content */}
               <TabsContent
                 value="technology"
                 className="bg-blue-50/50 rounded-lg p-6 animate-fadeIn"
@@ -176,6 +184,7 @@ const About = () => {
                 </div>
               </TabsContent>
 
+              {/* Team tab content */}
               <TabsContent
                 value="team"
                 className="bg-blue-50/50 rounded-lg p-6 animate-fadeIn"
@@ -202,6 +211,191 @@ const About = () => {
                       We believe that the best search experiences come from teams that value both technical 
                       excellence and human empathy. Every DEW team member is dedicated to understanding the 
                       questions behind your questions.
+                    </p>
+                  </div>
+                </div>
+              </TabsContent>
+
+              {/* Platforms tab content - NEW SECTION */}
+              <TabsContent
+                value="platforms"
+                className="bg-blue-50/50 rounded-lg p-6 animate-fadeIn"
+              >
+                <h3 className="text-2xl font-bold text-blue-800 mb-6">DEW on All Platforms</h3>
+                <p className="text-gray-700 mb-8">
+                  DEW works seamlessly across all your devices, providing a consistent and intuitive search 
+                  experience whether you're on your phone, tablet, or computer. See how DEW adapts to different 
+                  platforms while maintaining the same powerful search capabilities:
+                </p>
+
+                <Carousel className="w-full mb-8">
+                  <CarouselContent>
+                    {/* Mobile experience */}
+                    <CarouselItem className="md:basis-1/2">
+                      <div className="bg-gradient-to-br from-blue-100 to-blue-200 p-6 rounded-xl h-full">
+                        <div className="flex flex-col items-center">
+                          <Smartphone className="h-12 w-12 text-blue-600 mb-4 animate-float" />
+                          <h4 className="text-xl font-semibold text-blue-800 mb-3">Mobile Experience</h4>
+                          <div className="relative w-52 h-96 bg-gray-800 rounded-3xl p-2 shadow-xl mx-auto overflow-hidden">
+                            <div className="absolute top-0 w-24 h-6 bg-gray-800 rounded-b-xl left-1/2 transform -translate-x-1/2 z-10"></div>
+                            <div className="h-full w-full bg-gradient-to-br from-blue-50 to-white rounded-2xl overflow-hidden flex flex-col">
+                              <div className="h-10 bg-blue-500 flex items-center justify-center">
+                                <p className="text-white text-xs font-medium">DEW Mobile</p>
+                              </div>
+                              <div className="p-2 flex-1 flex flex-col">
+                                <div className="mb-2 w-full h-8 bg-white rounded-full shadow-sm flex items-center px-2">
+                                  <Search className="h-3 w-3 text-blue-500 mr-1" />
+                                  <div className="h-3 w-24 bg-gray-200 rounded-full"></div>
+                                </div>
+                                <div className="flex-1 space-y-1.5 overflow-hidden">
+                                  <div className="h-5 w-full bg-gray-100 rounded animate-pulse"></div>
+                                  <div className="h-5 w-11/12 bg-gray-100 rounded animate-pulse" style={{animationDelay: "0.1s"}}></div>
+                                  <div className="h-5 w-10/12 bg-gray-100 rounded animate-pulse" style={{animationDelay: "0.2s"}}></div>
+                                  <div className="h-10 w-full bg-blue-50 rounded-lg mt-2"></div>
+                                  <div className="h-10 w-full bg-blue-50 rounded-lg"></div>
+                                  <div className="h-10 w-full bg-blue-50 rounded-lg"></div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                          <p className="text-gray-700 mt-4 text-center text-sm">
+                            On mobile, DEW optimizes for touchscreens with larger buttons, simplified results,
+                            and voice search capabilities designed for on-the-go information seeking.
+                          </p>
+                        </div>
+                      </div>
+                    </CarouselItem>
+                    
+                    {/* Desktop experience */}
+                    <CarouselItem className="md:basis-1/2">
+                      <div className="bg-gradient-to-br from-purple-100 to-purple-200 p-6 rounded-xl h-full">
+                        <div className="flex flex-col items-center">
+                          <Laptop className="h-12 w-12 text-purple-600 mb-4 animate-float" />
+                          <h4 className="text-xl font-semibold text-purple-800 mb-3">Desktop Experience</h4>
+                          <div className="relative w-64 h-44 bg-gray-800 rounded-lg p-2 shadow-xl mx-auto overflow-hidden">
+                            <div className="h-full w-full bg-gradient-to-br from-blue-50 to-white rounded overflow-hidden flex flex-col">
+                              <div className="h-5 bg-gray-200 flex items-center px-2">
+                                <div className="flex space-x-1">
+                                  <div className="w-2 h-2 rounded-full bg-red-500"></div>
+                                  <div className="w-2 h-2 rounded-full bg-yellow-500"></div>
+                                  <div className="w-2 h-2 rounded-full bg-green-500"></div>
+                                </div>
+                              </div>
+                              <div className="p-2 flex-1 flex flex-col">
+                                <div className="mb-2 flex justify-center">
+                                  <div className="w-40 h-6 bg-white rounded-full shadow-sm flex items-center px-2">
+                                    <Search className="h-3 w-3 text-blue-500 mr-1" />
+                                    <div className="h-2 w-20 bg-gray-200 rounded-full"></div>
+                                  </div>
+                                </div>
+                                <div className="flex-1 grid grid-cols-2 gap-1 overflow-hidden">
+                                  <div className="col-span-2 h-4 w-full bg-gray-100 rounded animate-pulse"></div>
+                                  <div className="h-4 w-full bg-gray-100 rounded animate-pulse" style={{animationDelay: "0.1s"}}></div>
+                                  <div className="h-4 w-full bg-gray-100 rounded animate-pulse" style={{animationDelay: "0.2s"}}></div>
+                                  <div className="col-span-2 h-6 w-full bg-blue-50 rounded-lg mt-1"></div>
+                                  <div className="col-span-2 h-6 w-full bg-blue-50 rounded-lg"></div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                          <p className="text-gray-700 mt-4 text-center text-sm">
+                            The desktop version provides a full-featured experience with advanced filters, 
+                            side panels for deeper exploration, and keyboard shortcuts for power users.
+                          </p>
+                        </div>
+                      </div>
+                    </CarouselItem>
+                    
+                    {/* Tablet/Windows experience */}
+                    <CarouselItem className="md:basis-1/2">
+                      <div className="bg-gradient-to-br from-green-100 to-green-200 p-6 rounded-xl h-full">
+                        <div className="flex flex-col items-center">
+                          <Monitor className="h-12 w-12 text-green-600 mb-4 animate-float" />
+                          <h4 className="text-xl font-semibold text-green-800 mb-3">Windows Experience</h4>
+                          <div className="relative w-64 h-44 bg-blue-800 rounded-lg shadow-xl mx-auto overflow-hidden border-2 border-blue-600">
+                            <div className="h-6 bg-blue-700 flex items-center justify-between px-2">
+                              <div className="flex items-center">
+                                <div className="w-3 h-3 rounded-sm bg-white mr-2"></div>
+                                <p className="text-white text-xs">DEW for Windows</p>
+                              </div>
+                              <div className="flex space-x-2">
+                                <div className="w-3 h-3 text-white">−</div>
+                                <div className="w-3 h-3 text-white">□</div>
+                                <div className="w-3 h-3 text-white">×</div>
+                              </div>
+                            </div>
+                            <div className="p-2 bg-white flex-1 flex flex-col h-[calc(100%-24px)]">
+                              <div className="flex justify-center mb-2">
+                                <div className="w-40 h-6 bg-blue-100 rounded flex items-center px-2">
+                                  <Search className="h-3 w-3 text-blue-700 mr-1" />
+                                  <div className="h-2 w-24 bg-blue-200 rounded-full"></div>
+                                </div>
+                              </div>
+                              <div className="grid grid-cols-3 gap-1 flex-1">
+                                <div className="bg-blue-50 p-1 rounded text-xs text-center">Images</div>
+                                <div className="bg-blue-50 p-1 rounded text-xs text-center">News</div>
+                                <div className="bg-blue-50 p-1 rounded text-xs text-center">Maps</div>
+                                <div className="col-span-3 h-4 w-full bg-gray-100 rounded-sm animate-pulse"></div>
+                                <div className="col-span-3 h-4 w-11/12 bg-gray-100 rounded-sm animate-pulse" style={{animationDelay: "0.1s"}}></div>
+                                <div className="col-span-3 h-4 w-10/12 bg-gray-100 rounded-sm animate-pulse" style={{animationDelay: "0.2s"}}></div>
+                              </div>
+                            </div>
+                          </div>
+                          <p className="text-gray-700 mt-4 text-center text-sm">
+                            The Windows app integrates with the operating system, allowing for instant search 
+                            from the taskbar and custom Windows-specific features like file searching and PC settings access.
+                          </p>
+                        </div>
+                      </div>
+                    </CarouselItem>
+                  </CarouselContent>
+                  <div className="flex justify-center mt-4">
+                    <CarouselPrevious className="static transform-none mx-2 bg-blue-100 hover:bg-blue-200" />
+                    <CarouselNext className="static transform-none mx-2 bg-blue-100 hover:bg-blue-200" />
+                  </div>
+                </Carousel>
+
+                <div className="bg-white rounded-lg shadow-md p-6 mt-8">
+                  <h4 className="text-xl font-bold text-red-600 mb-4">Why Google's Search Has Declined</h4>
+                  <div className="space-y-4">
+                    <p className="text-gray-700">
+                      Google was once a breath of fresh air in the search world – clean, fast, and focused on delivering the 
+                      most relevant results. But over time, things have changed:
+                    </p>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div className="bg-red-50 p-4 rounded-lg">
+                        <h5 className="font-semibold text-red-800 mb-2">Prioritizing Ads Over Results</h5>
+                        <p className="text-gray-600 text-sm">
+                          Today's Google search results are dominated by paid placements, pushing organic results further down 
+                          the page and making it harder to find genuine information.
+                        </p>
+                      </div>
+                      <div className="bg-red-50 p-4 rounded-lg">
+                        <h5 className="font-semibold text-red-800 mb-2">Cluttered User Experience</h5>
+                        <p className="text-gray-600 text-sm">
+                          The once-clean interface has become crowded with features, widgets, and distractions that detract 
+                          from the core search experience.
+                        </p>
+                      </div>
+                      <div className="bg-red-50 p-4 rounded-lg">
+                        <h5 className="font-semibold text-red-800 mb-2">Privacy Concerns</h5>
+                        <p className="text-gray-600 text-sm">
+                          Google's business model relies on collecting vast amounts of user data, raising serious privacy 
+                          concerns and eroding trust in the platform.
+                        </p>
+                      </div>
+                      <div className="bg-red-50 p-4 rounded-lg">
+                        <h5 className="font-semibold text-red-800 mb-2">Gaming The System</h5>
+                        <p className="text-gray-600 text-sm">
+                          SEO-optimized content often ranks higher than genuinely useful information, resulting in 
+                          formulaic content designed to please algorithms rather than users.
+                        </p>
+                      </div>
+                    </div>
+                    <p className="text-gray-700 pt-2">
+                      At DEW, we're building something different – a search engine that respects your privacy, 
+                      prioritizes genuine information over paid placements, and delivers a clean, focused 
+                      experience that puts you in control of your information journey.
                     </p>
                   </div>
                 </div>
