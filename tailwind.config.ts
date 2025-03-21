@@ -1,4 +1,3 @@
-
 import type { Config } from "tailwindcss";
 
 export default {
@@ -13,12 +12,23 @@ export default {
 	theme: {
 		container: {
 			center: true,
-			padding: '2rem',
+			padding: {
+				DEFAULT: '1rem',
+				sm: '1.5rem',
+				md: '2rem',
+			},
 			screens: {
+				sm: '640px',
+				md: '768px',
+				lg: '1024px',
+				xl: '1280px',
 				'2xl': '1400px'
 			}
 		},
 		extend: {
+			screens: {
+				'xs': '400px',
+			},
 			colors: {
 				border: 'hsl(var(--border))',
 				input: 'hsl(var(--input))',
@@ -97,7 +107,15 @@ export default {
 				'float': {
 					'0%, 100%': { transform: 'translateY(0)' },
 					'50%': { transform: 'translateY(-5px)' }
-				}
+				},
+				'mobile-menu-slide-in': {
+					'0%': { transform: 'translateX(100%)' },
+					'100%': { transform: 'translateX(0)' }
+				},
+				'mobile-menu-slide-out': {
+					'0%': { transform: 'translateX(0)' },
+					'100%': { transform: 'translateX(100%)' }
+				},
 			},
 			animation: {
 				'accordion-down': 'accordion-down 0.2s ease-out',
@@ -106,8 +124,27 @@ export default {
 				'fade-up': 'fade-up 0.6s ease-out',
 				'scale-in': 'scale-in 0.3s ease-out',
 				'spin-slow': 'spin-slow A4s linear infinite',
-				'float': 'float 4s ease-in-out infinite'
-			}
+				'float': 'float 4s ease-in-out infinite',
+				'mobile-menu-in': 'mobile-menu-slide-in 0.3s ease-out',
+				'mobile-menu-out': 'mobile-menu-slide-out 0.3s ease-out',
+			},
+			fontSize: {
+				'2xs': '0.625rem', // 10px
+				'xs': '0.75rem',   // 12px
+				'sm': '0.875rem',  // 14px
+				'base': '1rem',    // 16px
+				'lg': '1.125rem',  // 18px
+				'xl': '1.25rem',   // 20px
+				'2xl': '1.5rem',   // 24px
+				'3xl': '1.875rem', // 30px
+				'4xl': '2.25rem',  // 36px
+			},
+			spacing: {
+				'safe-top': 'env(safe-area-inset-top)',
+				'safe-bottom': 'env(safe-area-inset-bottom)',
+				'safe-left': 'env(safe-area-inset-left)',
+				'safe-right': 'env(safe-area-inset-right)',
+			},
 		}
 	},
 	plugins: [require("tailwindcss-animate")],
