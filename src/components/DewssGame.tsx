@@ -1,8 +1,7 @@
-
 import React, { useState, useEffect, useRef } from 'react';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
-import { WaterDropIcon, CloudIcon, LeafIcon } from 'lucide-react';
+import { Droplet, Cloud, Leaf } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 
 const DewssGame = () => {
@@ -42,10 +41,8 @@ const DewssGame = () => {
         createDrop();
       }
       
-      // Water level decreases over time
       setWaterLevel(level => Math.max(0, level - 0.5));
       
-      // End game if water level reaches 0
       if (waterLevel <= 0) {
         endGame();
       }
@@ -97,11 +94,9 @@ const DewssGame = () => {
           caught: drop.caught
         }))
         .filter(drop => {
-          // Remove drops that fall off screen or are caught
           if (drop.caught) return false;
           
           if (drop.y > (gameAreaRef.current?.clientHeight || 400)) {
-            // Water wasted
             setWaterLevel(level => Math.max(0, level - 2));
             return false;
           }
@@ -132,9 +127,9 @@ const DewssGame = () => {
     <Card className="max-w-3xl mx-auto shadow-lg animate-fade-up">
       <CardHeader className="bg-gradient-to-r from-blue-500 to-blue-600 text-white">
         <CardTitle className="flex items-center justify-center gap-2 text-xl md:text-2xl">
-          <WaterDropIcon className="h-6 w-6 animate-bounce" />
+          <Droplet className="h-6 w-6 animate-bounce" />
           DEWSS: Every Drop Counts
-          <WaterDropIcon className="h-6 w-6 animate-bounce" />
+          <Droplet className="h-6 w-6 animate-bounce" />
         </CardTitle>
         <CardDescription className="text-blue-100 text-center">
           Catch falling water drops to conserve water! Let too many drops fall and your water level will deplete.
@@ -144,11 +139,11 @@ const DewssGame = () => {
       <CardContent className="pt-6">
         <div className="flex justify-between items-center mb-4">
           <div className="flex items-center gap-2">
-            <LeafIcon className="h-5 w-5 text-green-500" />
+            <Leaf className="h-5 w-5 text-green-500" />
             <span className="font-semibold text-lg">Score: {score}</span>
           </div>
           <div className="flex items-center gap-2">
-            <CloudIcon className="h-5 w-5 text-blue-500" />
+            <Cloud className="h-5 w-5 text-blue-500" />
             <span className="font-semibold text-lg">Time: {gameTime}s</span>
           </div>
         </div>
@@ -191,7 +186,7 @@ const DewssGame = () => {
               }}
               onClick={() => catchDrop(drop.id)}
             >
-              <WaterDropIcon 
+              <Droplet 
                 className="h-8 w-8 text-blue-500 animate-bounce"
               />
             </button>
