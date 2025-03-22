@@ -1,11 +1,13 @@
 
 import * as React from "react"
 
-// Constants for breakpoints
+// Constants for breakpoints - aligned with Tailwind defaults
 export const BREAKPOINTS = {
+  XS: 400,    // xs breakpoint (custom)
   MOBILE: 640,  // sm breakpoint
   TABLET: 768,  // md breakpoint
-  DESKTOP: 1024 // lg breakpoint
+  DESKTOP: 1024, // lg breakpoint
+  LARGE: 1280   // xl breakpoint
 }
 
 /**
@@ -43,21 +45,25 @@ export function useIsMobile() {
 }
 
 /**
- * Hook that returns the current breakpoint category
- * @returns {'mobile'|'tablet'|'desktop'} Current breakpoint category
+ * Hook that returns the current viewport size category
+ * @returns {'xs'|'mobile'|'tablet'|'desktop'|'large'} Current breakpoint category
  */
 export function useBreakpoint() {
-  const [breakpoint, setBreakpoint] = React.useState<'mobile'|'tablet'|'desktop'>('desktop')
+  const [breakpoint, setBreakpoint] = React.useState<'xs'|'mobile'|'tablet'|'desktop'|'large'>('desktop')
 
   React.useEffect(() => {
     const checkBreakpoint = () => {
       const width = window.innerWidth
-      if (width < BREAKPOINTS.MOBILE) {
+      if (width < BREAKPOINTS.XS) {
+        setBreakpoint('xs')
+      } else if (width < BREAKPOINTS.MOBILE) {
         setBreakpoint('mobile')
       } else if (width < BREAKPOINTS.DESKTOP) {
         setBreakpoint('tablet')
-      } else {
+      } else if (width < BREAKPOINTS.LARGE) {
         setBreakpoint('desktop')
+      } else {
+        setBreakpoint('large')
       }
     }
 
@@ -72,4 +78,32 @@ export function useBreakpoint() {
   }, [])
 
   return breakpoint
+}
+
+/**
+ * Hook that provides responsive design values based on current breakpoint
+ * @returns Responsive values for spacing, font sizes, etc.
+ */
+export function useResponsiveValues() {
+  const breakpoint = useBreakpoint()
+  
+  const spacing = React.useMemo(() => ({
+    container: breakpoint === 'xs' ? 'px-2' : 
+               breakpoint === 'mobile' ? 'px-3' : 
+               breakpoint === 'tablet' ? 'px-4' : 'px-6',
+    section: breakpoint === 'xs' ? 'py-3' : 
+             breakpoint === 'mobile' ? 'py-4' : 'py-6',
+    gap: breakpoint === 'xs' ? 'gap-2' : 
+         breakpoint === 'mobile' ? 'gap-3' : 'gap-4'
+  }), [breakpoint])
+  
+  const text = React.useMemo(() => ({
+    title: breakpoint === 'xs' ? 'text-lg' : 
+           breakpoint === 'mobile' ? 'text-xl' : 
+           breakpoint === 'tablet' ? 'text-2xl' : 'text-3xl',
+    subtitle: breakpoint === 'xs' ? 'text-base' : 
+              breakpoint === 'mobile' ? 'text-lg' : 'text-xl'
+  }), [breakpoint])
+  
+  return { spacing, text, breakpoint }
 }

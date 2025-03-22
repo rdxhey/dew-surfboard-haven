@@ -6,7 +6,17 @@ import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import DewssGame from '@/components/DewssGame';
-import { useIsMobile } from '@/hooks/use-mobile';
+import { useIsMobile, useResponsiveValues } from '@/hooks/use-mobile';
+
+// Dummy data for Dewdol cards
+const dewdols = [
+  { id: 1, name: "Earth Day", description: "Celebrating our planet with an eco-friendly DEW design", date: "April 22", color: "from-green-400 to-green-600" },
+  { id: 2, name: "Summer Solstice", description: "The longest day deserves the brightest DEW", date: "June 21", color: "from-yellow-400 to-orange-500" },
+  { id: 3, name: "New Year", description: "Ring in the new year with a sparkling DEW logo", date: "January 1", color: "from-blue-500 to-purple-600" },
+  { id: 4, name: "Lunar Landing", description: "One small step for DEW, one giant leap for search engines", date: "July 20", color: "from-gray-500 to-gray-700" },
+  { id: 5, name: "Valentine's Day", description: "Share your love for DEW on this special day", date: "February 14", color: "from-pink-400 to-red-500" },
+  { id: 6, name: "Dew AI", description: "Introducing our AI assistant, powering a smarter search experience", date: "All year", color: "from-indigo-400 to-blue-600" }
+];
 
 const Dewdols = () => {
   const [loaded, setLoaded] = useState(false);
@@ -15,6 +25,7 @@ const Dewdols = () => {
   const [activeTab, setActiveTab] = useState<'collection' | 'game'>('collection');
   const navigate = useNavigate();
   const isMobile = useIsMobile();
+  const { spacing, text } = useResponsiveValues();
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -23,15 +34,6 @@ const Dewdols = () => {
     
     return () => clearTimeout(timer);
   }, []);
-
-  const dewdols = [
-    { id: 1, name: "Earth Day", description: "Celebrating our planet with an eco-friendly DEW design", date: "April 22", color: "from-green-400 to-green-600" },
-    { id: 2, name: "Summer Solstice", description: "The longest day deserves the brightest DEW", date: "June 21", color: "from-yellow-400 to-orange-500" },
-    { id: 3, name: "New Year", description: "Ring in the new year with a sparkling DEW logo", date: "January 1", color: "from-blue-500 to-purple-600" },
-    { id: 4, name: "Lunar Landing", description: "One small step for DEW, one giant leap for search engines", date: "July 20", color: "from-gray-500 to-gray-700" },
-    { id: 5, name: "Valentine's Day", description: "Share your love for DEW on this special day", date: "February 14", color: "from-pink-400 to-red-500" },
-    { id: 6, name: "Halloween", description: "A spooky twist on the DEW logo that's hauntingly beautiful", date: "October 31", color: "from-orange-500 to-purple-700" }
-  ];
 
   const handleDewdolClick = (id: number) => {
     setSelectedDewdol(id === selectedDewdol ? null : id);
@@ -44,45 +46,11 @@ const Dewdols = () => {
 
   return (
     <div className="min-h-screen flex flex-col bg-gradient-to-b from-blue-50 to-white">
-      <header className="sticky top-0 z-10 p-3 md:p-6 flex items-center justify-between bg-white/90 backdrop-blur-sm border-b border-blue-100 shadow-sm">
-        <Button 
-          onClick={() => navigate('/')}
-          variant="ghost" 
-          size="sm"
-          className="flex items-center text-primary hover:bg-primary/10"
-        >
-          <ArrowLeft size={16} className="mr-2" />
-          <span className={isMobile ? "sr-only" : ""}>Back to DEW</span>
-        </Button>
-        <h1 className="text-xl md:text-3xl font-bold text-primary truncate">
-          Dewdols
-          <span className="ml-2 text-xs md:text-lg font-normal text-gray-500 hidden md:inline">Special Edition Logos</span>
-        </h1>
-        <div className="w-10 md:w-24"></div> {/* Spacer for centering */}
-      </header>
+      <Header navigate={navigate} isMobile={isMobile} />
       
-      <main className="flex-1 p-3 md:p-6">
+      <main className={`flex-1 ${spacing.container}`}>
         <div className="max-w-4xl mx-auto mb-6">
-          <div className="bg-white rounded-lg shadow-md p-4 mb-6">
-            <div className="flex flex-col md:flex-row gap-4 items-center justify-between">
-              <p className="text-center md:text-left text-gray-600 text-sm md:text-base">
-                Dewdols are special versions of the DEW logo created to celebrate holidays, 
-                anniversaries, and remarkable individuals. Explore our collection below!
-              </p>
-              
-              <Button 
-                onClick={toggleGame}
-                variant="outline" 
-                className="w-full md:w-auto group relative overflow-hidden bg-gradient-to-r from-blue-500 to-green-500 text-white border-0 hover:shadow-lg transition-all"
-              >
-                <span className="absolute inset-0 w-full h-full bg-gradient-to-r from-blue-400 to-green-400 group-hover:scale-110 transition-transform duration-300"></span>
-                <span className="relative z-10 flex items-center">
-                  <Star size={16} className="mr-2 animate-pulse" />
-                  {showGame && activeTab === 'game' ? 'Back to Collection' : 'Play DEWSS Game'}
-                </span>
-              </Button>
-            </div>
-          </div>
+          <InfoCard toggleGame={toggleGame} showGame={showGame} activeTab={activeTab} spacing={spacing} text={text} />
           
           {/* Tabs for Mobile */}
           {isMobile && (
@@ -103,6 +71,7 @@ const Dewdols = () => {
                     loaded={loaded} 
                     selectedDewdol={selectedDewdol} 
                     handleDewdolClick={handleDewdolClick} 
+                    spacing={spacing}
                   />
                 </TabsContent>
                 <TabsContent value="game">
@@ -127,37 +96,93 @@ const Dewdols = () => {
                 dewdols={dewdols} 
                 loaded={loaded} 
                 selectedDewdol={selectedDewdol} 
-                handleDewdolClick={handleDewdolClick} 
+                handleDewdolClick={handleDewdolClick}
+                spacing={spacing}
               />
             </>
           )}
         </div>
       </main>
       
-      <footer className="bg-white border-t border-gray-100 py-4 md:py-6 text-center text-gray-500 text-xs md:text-sm">
-        <p>Want to suggest a Dewdol? <a href="#" className="text-primary hover:underline">Contact us</a></p>
-        <p className="mt-2">© 2023 DEW • All Dewdols are created with <Star size={14} className="inline text-primary mx-1" /> by our team</p>
-      </footer>
+      <Footer />
     </div>
   );
 };
 
-// Extracted DewdolsGrid component for better code organization
+// Extracted Header component
+const Header = ({ navigate, isMobile }: { navigate: Function, isMobile: boolean }) => (
+  <header className="sticky top-0 z-10 p-3 md:p-6 flex items-center justify-between bg-white/90 backdrop-blur-sm border-b border-blue-100 shadow-sm">
+    <Button 
+      onClick={() => navigate('/')}
+      variant="ghost" 
+      size="sm"
+      className="flex items-center text-primary hover:bg-primary/10"
+    >
+      <ArrowLeft size={16} className="mr-2" />
+      <span className={isMobile ? "sr-only" : ""}>Back to DEW</span>
+    </Button>
+    <h1 className="text-xl md:text-3xl font-bold text-primary truncate">
+      Dewdols
+      <span className="ml-2 text-xs md:text-lg font-normal text-gray-500 hidden md:inline">Special Edition Logos</span>
+    </h1>
+    <div className="w-10 md:w-24"></div> {/* Spacer for centering */}
+  </header>
+);
+
+// Info Card Component
+const InfoCard = ({ 
+  toggleGame, 
+  showGame, 
+  activeTab, 
+  spacing, 
+  text 
+}: { 
+  toggleGame: () => void, 
+  showGame: boolean, 
+  activeTab: string,
+  spacing: any,
+  text: any
+}) => (
+  <div className={`bg-white rounded-lg shadow-md p-4 mb-6 ${spacing.section}`}>
+    <div className="flex flex-col md:flex-row gap-4 items-center justify-between">
+      <p className="text-center md:text-left text-gray-600 text-sm md:text-base">
+        Dewdols are special versions of the DEW logo created to celebrate holidays, 
+        anniversaries, and remarkable individuals. Explore our collection below!
+      </p>
+      
+      <Button 
+        onClick={toggleGame}
+        variant="outline" 
+        className="w-full md:w-auto group relative overflow-hidden bg-gradient-to-r from-blue-500 to-green-500 text-white border-0 hover:shadow-lg transition-all"
+      >
+        <span className="absolute inset-0 w-full h-full bg-gradient-to-r from-blue-400 to-green-400 group-hover:scale-110 transition-transform duration-300"></span>
+        <span className="relative z-10 flex items-center">
+          <Star size={16} className="mr-2 animate-pulse" />
+          {showGame && activeTab === 'game' ? 'Back to Collection' : 'Play DEWSS Game'}
+        </span>
+      </Button>
+    </div>
+  </div>
+);
+
+// Extracted DewdolsGrid component
 const DewdolsGrid = ({ 
   dewdols, 
   loaded, 
   selectedDewdol, 
-  handleDewdolClick 
+  handleDewdolClick,
+  spacing
 }: { 
   dewdols: any[], 
   loaded: boolean, 
   selectedDewdol: number | null, 
-  handleDewdolClick: (id: number) => void 
+  handleDewdolClick: (id: number) => void,
+  spacing: any
 }) => {
   const isMobile = useIsMobile();
   
   return (
-    <div className={`grid grid-cols-1 ${isMobile ? 'grid-cols-1' : 'md:grid-cols-2 lg:grid-cols-3'} gap-4 md:gap-6 ${loaded ? 'animate-fade-in' : 'opacity-0'}`}>
+    <div className={`grid ${isMobile ? 'grid-cols-1' : 'md:grid-cols-2 lg:grid-cols-3'} ${spacing.gap} ${loaded ? 'animate-fade-in' : 'opacity-0'}`}>
       {dewdols.map((dewdol, index) => (
         <DewdolCard 
           key={dewdol.id}
@@ -190,7 +215,7 @@ const DewdolCard = ({
         isSelected && "ring-2 ring-primary",
         "animate-fade-up"
       )}
-      style={{ animationDelay: `${index * 0.1}s` }}
+      style={{ animationDelay: `${index * 0.05}s` }}
       onClick={onClick}
     >
       <div className={`h-36 md:h-48 bg-gradient-to-br ${dewdol.color} flex items-center justify-center p-4`}>
@@ -209,5 +234,13 @@ const DewdolCard = ({
     </div>
   );
 };
+
+// Footer component
+const Footer = () => (
+  <footer className="bg-white border-t border-gray-100 py-4 md:py-6 text-center text-gray-500 text-xs md:text-sm">
+    <p>Want to suggest a Dewdol? <a href="#" className="text-primary hover:underline">Contact us</a></p>
+    <p className="mt-2">© 2023 DEW • All Dewdols are created with <Star size={14} className="inline text-primary mx-1" /> by our team</p>
+  </footer>
+);
 
 export default Dewdols;
