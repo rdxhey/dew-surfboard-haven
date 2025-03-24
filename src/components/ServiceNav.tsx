@@ -20,7 +20,7 @@ const ServiceNav = ({ className }: ServiceNavProps) => {
       <ServiceButton 
         icon={<UserCircle size={20} />}
         label="Diary Account"
-        href="#account"
+        href="/diary"
       />
       <ServiceButton 
         icon={<Sparkles size={20} />}
