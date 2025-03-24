@@ -2,7 +2,7 @@
 import React from 'react';
 import { UserCircle, Video, Image, Sparkles } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { Badge } from '@/components/ui/badge';
 
 interface ServiceNavProps {
@@ -10,6 +10,8 @@ interface ServiceNavProps {
 }
 
 const ServiceNav = ({ className }: ServiceNavProps) => {
+  const navigate = useNavigate();
+  
   return (
     <div className={cn('flex justify-center items-center gap-4 md:gap-6', className)}>
       <ServiceButton 
@@ -20,7 +22,7 @@ const ServiceNav = ({ className }: ServiceNavProps) => {
       <ServiceButton 
         icon={<UserCircle size={20} />}
         label="Diary Account"
-        href="/diary"
+        onClick={() => navigate('/diary')}
       />
       <ServiceButton 
         icon={<Sparkles size={20} />}
@@ -40,16 +42,15 @@ const ServiceNav = ({ className }: ServiceNavProps) => {
 interface ServiceButtonProps {
   icon: React.ReactNode;
   label: string;
-  href: string;
+  href?: string;
+  onClick?: () => void;
   isNew?: boolean;
 }
 
-const ServiceButton = ({ icon, label, href, isNew = false }: ServiceButtonProps) => {
-  return (
-    <Link 
-      to={href}
-      className="group flex flex-col items-center hover-lift relative"
-    >
+const ServiceButton = ({ icon, label, href, onClick, isNew = false }: ServiceButtonProps) => {
+  // If onClick is provided, use a button, otherwise use a Link
+  const ButtonContent = (
+    <>
       <div className="w-10 h-10 md:w-12 md:h-12 rounded-full glass-effect flex items-center justify-center button-transition group-hover:border-primary/20 group-hover:bg-white/90">
         <span className="text-gray-600 group-hover:text-primary transition-colors duration-300">
           {icon}
@@ -67,6 +68,26 @@ const ServiceButton = ({ icon, label, href, isNew = false }: ServiceButtonProps)
           NEW
         </Badge>
       )}
+    </>
+  );
+
+  if (onClick) {
+    return (
+      <button 
+        onClick={onClick}
+        className="group flex flex-col items-center hover-lift relative"
+      >
+        {ButtonContent}
+      </button>
+    );
+  }
+
+  return (
+    <Link 
+      to={href || "#"}
+      className="group flex flex-col items-center hover-lift relative"
+    >
+      {ButtonContent}
     </Link>
   );
 };
