@@ -9,6 +9,8 @@ import Search from "./pages/Search";
 import Dewdols from "./pages/Dewdols";
 import About from "./pages/About";
 import Diary from "./pages/Diary";
+import DewAI from "./pages/DewAI";
+import Eclipse from "./pages/Eclipse";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -25,6 +27,8 @@ const App = () => (
           <Route path="/dewdols" element={<Dewdols />} />
           <Route path="/about" element={<About />} />
           <Route path="/diary" element={<Diary />} />
+          <Route path="/dew-ai" element={<DewAI />} />
+          <Route path="/eclipse" element={<Eclipse />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>

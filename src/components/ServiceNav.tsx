@@ -37,13 +37,13 @@ const ServiceNav = ({ className }: ServiceNavProps) => {
       <ServiceButton 
         icon={<Sparkles size={20} />}
         label="Dew AI"
-        onClick={() => handleComingSoon('Dew AI')}
+        onClick={() => navigate('/dew-ai')}
         isNew={true}
       />
       <ServiceButton 
         icon={<Video size={20} />}
         label="Eclipse"
-        onClick={() => handleComingSoon('Eclipse')}
+        onClick={() => navigate('/eclipse')}
       />
     </div>
   );
