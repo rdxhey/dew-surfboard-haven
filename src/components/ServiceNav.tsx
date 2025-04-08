@@ -27,23 +27,23 @@ const ServiceNav = ({ className }: ServiceNavProps) => {
       <ServiceButton 
         icon={<Image size={20} />}
         label="Images"
-        href="/search?type=images"
+        to="/search?type=images"
       />
       <ServiceButton 
         icon={<UserCircle size={20} />}
         label="Diary Account"
-        href="/diary"
+        to="/diary"
       />
       <ServiceButton 
         icon={<Sparkles size={20} />}
         label="Dew AI"
-        href="/dew-ai"
+        to="/dew-ai"
         isNew={true}
       />
       <ServiceButton 
         icon={<Video size={20} />}
         label="Eclipse"
-        href="/eclipse"
+        to="/eclipse"
       />
     </div>
   );
@@ -52,13 +52,12 @@ const ServiceNav = ({ className }: ServiceNavProps) => {
 interface ServiceButtonProps {
   icon: React.ReactNode;
   label: string;
-  href?: string;
+  to?: string;
   onClick?: () => void;
   isNew?: boolean;
 }
 
-const ServiceButton = ({ icon, label, href, onClick, isNew = false }: ServiceButtonProps) => {
-  // If onClick is provided, use a button, otherwise use a Link
+const ServiceButton = ({ icon, label, to, onClick, isNew = false }: ServiceButtonProps) => {
   const ButtonContent = (
     <>
       <div className="w-10 h-10 md:w-12 md:h-12 rounded-full glass-effect flex items-center justify-center button-transition group-hover:border-primary/20 group-hover:bg-white/90">
@@ -94,7 +93,7 @@ const ServiceButton = ({ icon, label, href, onClick, isNew = false }: ServiceBut
 
   return (
     <Link 
-      to={href || "#"}
+      to={to || "#"}
       className="group flex flex-col items-center hover-lift relative"
     >
       {ButtonContent}
