@@ -7,17 +7,18 @@ interface LogoProps {
   size?: 'sm' | 'md' | 'lg';
   className?: string;
   animated?: boolean;
+  onClick?: () => void;
 }
 
-const Logo = ({ size = 'lg', className, animated = true }: LogoProps) => {
+const Logo = ({ size = 'lg', className, animated = true, onClick }: LogoProps) => {
   const sizeClasses = {
     sm: 'text-2xl md:text-3xl',
     md: 'text-4xl md:text-5xl',
     lg: 'text-6xl md:text-7xl'
   };
 
-  return (
-    <Link to="/" className="cursor-pointer relative group">
+  const content = (
+    <>
       <div className={cn(
         'font-bold tracking-tighter text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600 relative z-10',
         sizeClasses[size],
@@ -32,6 +33,20 @@ const Logo = ({ size = 'lg', className, animated = true }: LogoProps) => {
       
       {/* Decorative element */}
       <div className="absolute -bottom-1 left-1/2 transform -translate-x-1/2 w-1/2 h-0.5 bg-gradient-to-r from-transparent via-blue-500/50 to-transparent rounded-full"></div>
+    </>
+  );
+
+  if (onClick) {
+    return (
+      <div className="cursor-pointer relative group" onClick={onClick}>
+        {content}
+      </div>
+    );
+  }
+
+  return (
+    <Link to="/" className="cursor-pointer relative group">
+      {content}
     </Link>
   );
 };
