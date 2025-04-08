@@ -27,23 +27,23 @@ const ServiceNav = ({ className }: ServiceNavProps) => {
       <ServiceButton 
         icon={<Image size={20} />}
         label="Images"
-        onClick={() => navigate('/search?type=images')}
+        href="/search?type=images"
       />
       <ServiceButton 
         icon={<UserCircle size={20} />}
         label="Diary Account"
-        onClick={() => navigate('/diary')}
+        href="/diary"
       />
       <ServiceButton 
         icon={<Sparkles size={20} />}
         label="Dew AI"
-        onClick={() => navigate('/dew-ai')}
+        href="/dew-ai"
         isNew={true}
       />
       <ServiceButton 
         icon={<Video size={20} />}
         label="Eclipse"
-        onClick={() => navigate('/eclipse')}
+        href="/eclipse"
       />
     </div>
   );
