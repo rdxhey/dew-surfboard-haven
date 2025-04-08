@@ -1,6 +1,5 @@
-
 import React, { useState } from 'react';
-import { UserCircle, Calendar, Book, ArrowRight, CheckCircle, Lock } from 'lucide-react';
+import { UserCircle, Calendar, Book, ArrowRight, Lock } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';

@@ -4,6 +4,7 @@ import { UserCircle, Video, Image, Sparkles } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Link, useNavigate } from 'react-router-dom';
 import { Badge } from '@/components/ui/badge';
+import { useToast } from '@/hooks/use-toast';
 
 interface ServiceNavProps {
   className?: string;
@@ -11,13 +12,22 @@ interface ServiceNavProps {
 
 const ServiceNav = ({ className }: ServiceNavProps) => {
   const navigate = useNavigate();
+  const { toast } = useToast();
+  
+  const handleComingSoon = (feature: string) => {
+    toast({
+      title: "Coming Soon",
+      description: `The ${feature} feature is coming soon. Stay tuned!`,
+      variant: "default",
+    });
+  };
   
   return (
     <div className={cn('flex justify-center items-center gap-4 md:gap-6', className)}>
       <ServiceButton 
         icon={<Image size={20} />}
         label="Images"
-        href="/search?type=images"
+        onClick={() => navigate('/search?type=images')}
       />
       <ServiceButton 
         icon={<UserCircle size={20} />}
@@ -27,13 +37,13 @@ const ServiceNav = ({ className }: ServiceNavProps) => {
       <ServiceButton 
         icon={<Sparkles size={20} />}
         label="Dew AI"
-        href="#dewai"
+        onClick={() => handleComingSoon('Dew AI')}
         isNew={true}
       />
       <ServiceButton 
         icon={<Video size={20} />}
         label="Eclipse"
-        href="#eclipse"
+        onClick={() => handleComingSoon('Eclipse')}
       />
     </div>
   );
@@ -75,7 +85,7 @@ const ServiceButton = ({ icon, label, href, onClick, isNew = false }: ServiceBut
     return (
       <button 
         onClick={onClick}
-        className="group flex flex-col items-center hover-lift relative"
+        className="group flex flex-col items-center hover-lift relative cursor-pointer"
       >
         {ButtonContent}
       </button>
