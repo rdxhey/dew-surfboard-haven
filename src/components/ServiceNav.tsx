@@ -79,7 +79,7 @@ const AppsMenu = () => {
           </div>
         </button>
       </PopoverTrigger>
-      <PopoverContent align="end" sideOffset={10} className="p-4 bg-white rounded-2xl shadow-xl border border-gray-200 w-80 z-50">
+      <PopoverContent align="end" sideOffset={10} className="p-4 bg-white rounded-2xl shadow-xl border border-gray-200 w-80 z-[1000]">
         <div className="grid grid-cols-3 gap-4">
           {SERVICES.map((svc, i) => (
             <button
