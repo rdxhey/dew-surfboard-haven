@@ -52,7 +52,7 @@ const Index = () => {
     <div className="min-h-screen flex flex-col justify-between py-4 px-4 md:px-6 overflow-hidden bg-gradient-to-b from-blue-50/60 to-white">
       {/* Top Navigation */}
       <div 
-        className={`flex justify-end py-4 ${loaded ? 'animate-slide-in-right' : 'translate-x-full'}`}
+        className={`flex justify-end py-4 z-50 ${loaded ? 'animate-slide-in-right' : 'translate-x-full'}`}
         style={{ transitionDuration: '0.5s' }}
       >
         <ServiceNav />

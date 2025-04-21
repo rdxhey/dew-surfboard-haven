@@ -1,146 +1,122 @@
 
-import React, { useState } from 'react';
+import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ArrowLeft, HelpCircle, Search, MessageSquare, Info } from 'lucide-react';
+import { ArrowLeft, HelpCircle, Search, Image, FileText, SunMoon } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Card } from '@/components/ui/card';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
-import Footer from '@/components/Footer';
-import ServiceNav from '@/components/ServiceNav';
 
 const HelpCenter = () => {
   const navigate = useNavigate();
-  const [searchQuery, setSearchQuery] = useState('');
-  
-  const faqItems = [
-    {
-      question: "How do I change my search preferences?",
-      answer: "You can change your search preferences by clicking on the Settings icon in the top right corner of the search results page. From there, you can customize your search experience including SafeSearch filters, results per page, and more."
-    },
-    {
-      question: "How do I clear my search history?",
-      answer: "To clear your search history, go to your Account page by clicking on your profile picture. Navigate to 'Activity Controls' and select 'Clear Search History.' You can choose to delete all history or select a specific time range."
-    },
-    {
-      question: "How does Dew Search differ from other search engines?",
-      answer: "Dew Search combines traditional web search with AI-powered insights to deliver more relevant results. We also prioritize privacy, using advanced anonymization techniques to protect your personal data while still providing personalized results."
-    },
-    {
-      question: "How do I create a Dew account?",
-      answer: "To create a Dew account, click on the 'Sign Up' button in the top right corner of any Dew page. You can sign up using your email, or connect with existing Google or Facebook accounts for a seamless experience."
-    },
-    {
-      question: "How do I report inappropriate content?",
-      answer: "If you encounter inappropriate content in your search results, click the three dots next to the result and select 'Report.' Fill in the report form with relevant details, and our team will review it promptly in accordance with our community guidelines."
-    }
-  ];
-  
-  // Filter FAQ items based on search query
-  const filteredFaqs = searchQuery 
-    ? faqItems.filter(item => 
-        item.question.toLowerCase().includes(searchQuery.toLowerCase()) || 
-        item.answer.toLowerCase().includes(searchQuery.toLowerCase())
-      )
-    : faqItems;
   
   return (
-    <div className="min-h-screen flex flex-col bg-gradient-to-b from-blue-50/60 to-white">
-      {/* Header */}
-      <header className="container mx-auto flex justify-between items-center py-4 px-4 md:px-6">
+    <div className="min-h-screen bg-gradient-to-b from-blue-50/60 to-white p-6">
+      <div className="max-w-3xl mx-auto">
         <Button 
           variant="ghost" 
-          size="sm" 
-          className="flex items-center gap-1" 
-          onClick={() => navigate(-1)}
+          className="mb-6 gap-2"
+          onClick={() => navigate('/')}
         >
           <ArrowLeft size={16} />
-          <span>Back</span>
+          Back to Home
         </Button>
-        <ServiceNav />
-      </header>
-
-      {/* Main Content */}
-      <main className="flex-1 container mx-auto px-4 md:px-6 py-8 max-w-4xl">
-        <div className="mb-8 flex items-center gap-2">
-          <HelpCircle className="text-primary" size={32} />
-          <h1 className="text-3xl font-bold text-gray-800">Help Center</h1>
+        
+        <div className="flex items-center gap-3 mb-8">
+          <HelpCircle className="h-8 w-8 text-primary" />
+          <h1 className="text-3xl font-bold text-gray-900">Help Center</h1>
         </div>
-
-        {/* Search Bar */}
-        <div className="mb-8 relative">
-          <Input
-            type="text"
-            placeholder="Search for help..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="pl-10 h-12 rounded-lg"
-          />
-          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={16} />
-        </div>
-
-        {/* Quick Help Categories */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
-          <Card className="p-4 hover:shadow-md transition-shadow cursor-pointer">
-            <div className="flex flex-col items-center text-center">
-              <div className="bg-blue-100 p-3 rounded-full mb-3">
-                <MessageSquare className="text-primary" size={24} />
-              </div>
-              <h3 className="font-medium mb-1">Contact Support</h3>
-              <p className="text-sm text-gray-500">Get help from our team</p>
-            </div>
-          </Card>
+        
+        <div className="bg-white p-6 rounded-lg shadow-sm mb-8">
+          <h2 className="text-xl font-semibold mb-4 text-gray-800">How can we help you?</h2>
+          <p className="text-gray-600 mb-6">
+            Find answers to common questions about using Dew Search and other Dew services.
+          </p>
           
-          <Card className="p-4 hover:shadow-md transition-shadow cursor-pointer">
-            <div className="flex flex-col items-center text-center">
-              <div className="bg-green-100 p-3 rounded-full mb-3">
-                <Search className="text-green-600" size={24} />
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+            <Button variant="outline" className="h-auto py-4 justify-start gap-3" onClick={() => navigate('/search?type=web')}>
+              <Search className="h-5 w-5 text-primary" />
+              <div className="text-left">
+                <div className="font-medium">Dew Search</div>
+                <div className="text-xs text-gray-500">Learn how to search effectively</div>
               </div>
-              <h3 className="font-medium mb-1">Search Guides</h3>
-              <p className="text-sm text-gray-500">Learn advanced search tips</p>
-            </div>
-          </Card>
+            </Button>
+            
+            <Button variant="outline" className="h-auto py-4 justify-start gap-3" onClick={() => navigate('/search?type=images')}>
+              <Image className="h-5 w-5 text-primary" />
+              <div className="text-left">
+                <div className="font-medium">Dew Images</div>
+                <div className="text-xs text-gray-500">Find the perfect images</div>
+              </div>
+            </Button>
+            
+            <Button variant="outline" className="h-auto py-4 justify-start gap-3" onClick={() => navigate('/dew-ai')}>
+              <FileText className="h-5 w-5 text-primary" />
+              <div className="text-left">
+                <div className="font-medium">Dew AI</div>
+                <div className="text-xs text-gray-500">Get help with AI assistant</div>
+              </div>
+            </Button>
+            
+            <Button variant="outline" className="h-auto py-4 justify-start gap-3" onClick={() => navigate('/eclipse')}>
+              <SunMoon className="h-5 w-5 text-primary" />
+              <div className="text-left">
+                <div className="font-medium">Eclipse</div>
+                <div className="text-xs text-gray-500">Customize your experience</div>
+              </div>
+            </Button>
+          </div>
+        </div>
+        
+        <Accordion type="single" collapsible className="bg-white rounded-lg shadow-sm">
+          <AccordionItem value="item-1">
+            <AccordionTrigger className="px-6 py-4 hover:no-underline">
+              How do I perform a basic search?
+            </AccordionTrigger>
+            <AccordionContent className="px-6 pb-4">
+              To perform a basic search, simply type your query in the search box on the Dew homepage and press Enter or click the search button. You'll be presented with a list of relevant results.
+            </AccordionContent>
+          </AccordionItem>
           
-          <Card className="p-4 hover:shadow-md transition-shadow cursor-pointer">
-            <div className="flex flex-col items-center text-center">
-              <div className="bg-yellow-100 p-3 rounded-full mb-3">
-                <Info className="text-yellow-600" size={24} />
-              </div>
-              <h3 className="font-medium mb-1">About Dew</h3>
-              <p className="text-sm text-gray-500">Learn about our mission</p>
-            </div>
-          </Card>
+          <AccordionItem value="item-2">
+            <AccordionTrigger className="px-6 py-4 hover:no-underline">
+              How do I search for images?
+            </AccordionTrigger>
+            <AccordionContent className="px-6 pb-4">
+              To search for images, click on "Dew Images" button on the homepage, or select the Images tab after performing a search. You can also directly go to the Images section by clicking on the Images icon in the app menu.
+            </AccordionContent>
+          </AccordionItem>
+          
+          <AccordionItem value="item-3">
+            <AccordionTrigger className="px-6 py-4 hover:no-underline">
+              What is Dew AI and how do I use it?
+            </AccordionTrigger>
+            <AccordionContent className="px-6 pb-4">
+              Dew AI is our intelligent assistant that provides direct answers to your questions. To use it, simply ask a question in the search box. For complex questions, Dew AI will generate a comprehensive response with sources. You can also access Dew AI directly from the app menu.
+            </AccordionContent>
+          </AccordionItem>
+          
+          <AccordionItem value="item-4">
+            <AccordionTrigger className="px-6 py-4 hover:no-underline">
+              How do I manage my privacy settings?
+            </AccordionTrigger>
+            <AccordionContent className="px-6 pb-4">
+              To manage your privacy settings, visit your account settings page. From there, you can control what data is collected, how it's used, and opt out of personalized search results if desired. For more details, please review our Privacy Policy.
+            </AccordionContent>
+          </AccordionItem>
+          
+          <AccordionItem value="item-5">
+            <AccordionTrigger className="px-6 py-4 hover:no-underline">
+              How do I report a technical issue?
+            </AccordionTrigger>
+            <AccordionContent className="px-6 pb-4">
+              If you encounter a technical issue, please visit our Feedback page and select "Report an issue" from the dropdown menu. Provide as much detail as possible, including what you were doing when the issue occurred and any error messages you received.
+            </AccordionContent>
+          </AccordionItem>
+        </Accordion>
+        
+        <div className="text-center mt-10 text-sm text-gray-500">
+          <p>Couldn't find what you were looking for? <Button variant="link" className="p-0 h-auto" onClick={() => navigate('/feedback')}>Contact us</Button></p>
         </div>
-
-        {/* FAQ Section */}
-        <div className="mb-8">
-          <h2 className="text-xl font-semibold mb-4">Frequently Asked Questions</h2>
-          <Accordion type="single" collapsible className="bg-white rounded-lg shadow-sm border">
-            {filteredFaqs.map((faq, index) => (
-              <AccordionItem key={index} value={`item-${index}`}>
-                <AccordionTrigger className="px-4 py-3 hover:bg-gray-50">{faq.question}</AccordionTrigger>
-                <AccordionContent className="px-4 pb-4 pt-1 text-gray-600">
-                  {faq.answer}
-                </AccordionContent>
-              </AccordionItem>
-            ))}
-            {filteredFaqs.length === 0 && (
-              <div className="p-4 text-center text-gray-500">
-                No results found for "{searchQuery}". Try a different search term.
-              </div>
-            )}
-          </Accordion>
-        </div>
-
-        {/* Still Need Help Section */}
-        <div className="bg-blue-50 rounded-lg p-6 text-center">
-          <h3 className="text-lg font-medium mb-2">Still Need Help?</h3>
-          <p className="text-gray-600 mb-4">Our support team is here to assist you with any questions or concerns.</p>
-          <Button className="bg-primary hover:bg-primary/90">Contact Support</Button>
-        </div>
-      </main>
-
-      <Footer />
+      </div>
     </div>
   );
 };
