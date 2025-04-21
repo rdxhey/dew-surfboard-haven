@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Menu, Calendar, CircleUser, Search, Image, FileText, SunMoon } from 'lucide-react';
+import { Box, CircleUser, Search, Image, FileText, SunMoon } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Badge } from '@/components/ui/badge';
 import { Popover, PopoverTrigger, PopoverContent } from '@/components/ui/popover';
@@ -70,18 +70,22 @@ const AppsMenu = () => {
       <PopoverTrigger asChild>
         <button
           aria-label="Open apps menu"
-          className="rounded-full w-11 h-11 flex items-center justify-center bg-white/90 hover:bg-gray-100 shadow group border border-gray-200"
+          type="button"
+          className="rounded-full w-11 h-11 flex items-center justify-center bg-white/90 hover:bg-gray-100 shadow group border border-gray-200 cursor-pointer"
         >
-          <Calendar size={24} className="text-gray-600 group-hover:text-primary transition-colors" />
+          <div className="relative flex items-center justify-center">
+            <Box size={22} className="text-gray-600 group-hover:text-primary transition-colors" />
+            <span className="absolute text-[8px] font-bold text-gray-700">ABC</span>
+          </div>
         </button>
       </PopoverTrigger>
-      <PopoverContent align="end" sideOffset={10} className="p-4 bg-white rounded-2xl shadow-xl border border-gray-200 w-80">
+      <PopoverContent align="end" sideOffset={10} className="p-4 bg-white rounded-2xl shadow-xl border border-gray-200 w-80 z-50">
         <div className="grid grid-cols-3 gap-4">
           {SERVICES.map((svc, i) => (
             <button
               key={svc.label}
               onClick={() => handleServiceClick(svc)}
-              className="flex flex-col items-center hover:bg-gray-100/90 active:bg-gray-200 transition rounded-xl p-2 relative group focus:outline-none"
+              className="flex flex-col items-center hover:bg-gray-100/90 active:bg-gray-200 transition rounded-xl p-2 relative group focus:outline-none cursor-pointer"
             >
               <span className="flex items-center justify-center w-12 h-12 rounded-full bg-gray-50 shadow-sm mb-1 group-hover:bg-white">
                 {svc.icon}
