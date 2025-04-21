@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { UserCircle, Video, Image, Sparkles } from 'lucide-react';
+import { UserCircle, Image, Sparkles, Video } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Link, useNavigate } from 'react-router-dom';
 import { Badge } from '@/components/ui/badge';
@@ -58,6 +58,16 @@ interface ServiceButtonProps {
 }
 
 const ServiceButton = ({ icon, label, to, onClick, isNew = false }: ServiceButtonProps) => {
+  const navigate = useNavigate();
+  
+  const handleClick = () => {
+    if (onClick) {
+      onClick();
+    } else if (to) {
+      navigate(to);
+    }
+  };
+
   const ButtonContent = (
     <>
       <div className="w-10 h-10 md:w-12 md:h-12 rounded-full glass-effect flex items-center justify-center button-transition group-hover:border-primary/20 group-hover:bg-white/90">
@@ -80,24 +90,13 @@ const ServiceButton = ({ icon, label, to, onClick, isNew = false }: ServiceButto
     </>
   );
 
-  if (onClick) {
-    return (
-      <button 
-        onClick={onClick}
-        className="group flex flex-col items-center hover-lift relative cursor-pointer"
-      >
-        {ButtonContent}
-      </button>
-    );
-  }
-
   return (
-    <Link 
-      to={to || "#"}
-      className="group flex flex-col items-center hover-lift relative"
+    <button 
+      onClick={handleClick}
+      className="group flex flex-col items-center hover-lift relative cursor-pointer"
     >
       {ButtonContent}
-    </Link>
+    </button>
   );
 };
 

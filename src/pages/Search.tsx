@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import Logo from '@/components/Logo';
 import SearchBar from '@/components/SearchBar';
 import Footer from '@/components/Footer';
@@ -8,6 +8,7 @@ import Footer from '@/components/Footer';
 const Search = () => {
   const [loaded, setLoaded] = useState(false);
   const location = useLocation();
+  const navigate = useNavigate();
   const searchParams = new URLSearchParams(location.search);
   const query = searchParams.get('q') || '';
   const type = searchParams.get('type') || 'web';
@@ -21,9 +22,19 @@ const Search = () => {
     return () => clearTimeout(timer);
   }, []);
 
+  // Update the component when search parameters change
+  useEffect(() => {
+    // Handle type changes from URL
+    console.log("Search type changed to:", type);
+  }, [type]);
+
   const handleSearch = (newQuery: string) => {
     console.log('Searching for:', newQuery);
-    // In a real app, this would trigger a new search
+    navigate(`/search?q=${encodeURIComponent(newQuery)}&type=${type}`);
+  };
+
+  const handleTypeChange = (newType: string) => {
+    navigate(`/search?q=${encodeURIComponent(query)}&type=${newType}`);
   };
 
   return (
@@ -38,8 +49,18 @@ const Search = () => {
         <div className={`${loaded ? 'animate-slide-in-right' : 'translate-x-full'}`} style={{ transitionDuration: '0.5s', transitionDelay: '0.2s' }}>
           <div className="flex items-center gap-4">
             <a href="/" className="text-gray-600 hover:text-primary text-sm">Home</a>
-            <a href="/search?type=web" className={`text-sm ${type === 'web' ? 'text-primary border-b-2 border-primary' : 'text-gray-600 hover:text-primary'}`}>Web</a>
-            <a href="/search?type=images" className={`text-sm ${type === 'images' ? 'text-primary border-b-2 border-primary' : 'text-gray-600 hover:text-primary'}`}>Images</a>
+            <button 
+              onClick={() => handleTypeChange('web')}
+              className={`text-sm ${type === 'web' ? 'text-primary border-b-2 border-primary' : 'text-gray-600 hover:text-primary'}`}
+            >
+              Web
+            </button>
+            <button 
+              onClick={() => handleTypeChange('images')} 
+              className={`text-sm ${type === 'images' ? 'text-primary border-b-2 border-primary' : 'text-gray-600 hover:text-primary'}`}
+            >
+              Images
+            </button>
           </div>
         </div>
       </div>
