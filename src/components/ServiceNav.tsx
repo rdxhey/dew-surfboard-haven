@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Menu, Apps, CircleUser, Search, Image, Diary, Eclipse } from 'lucide-react';
+import { Menu, Calendar, CircleUser, Search, Image, FileText, SunMoon } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Badge } from '@/components/ui/badge';
 import { Popover, PopoverTrigger, PopoverContent } from '@/components/ui/popover';
@@ -28,13 +28,13 @@ const SERVICES = [
     to: "/search?type=web",
   },
   {
-    icon: <Diary size={28} />,
+    icon: <FileText size={28} />,
     label: "Dew AI",
     to: "/dew-ai",
     isNew: true,
   },
   {
-    icon: <Eclipse size={28} />,
+    icon: <SunMoon size={28} />,
     label: "Eclipse",
     to: "/eclipse",
   },
@@ -72,7 +72,7 @@ const AppsMenu = () => {
           aria-label="Open apps menu"
           className="rounded-full w-11 h-11 flex items-center justify-center bg-white/90 hover:bg-gray-100 shadow group border border-gray-200"
         >
-          <Apps size={24} className="text-gray-600 group-hover:text-primary transition-colors" />
+          <Calendar size={24} className="text-gray-600 group-hover:text-primary transition-colors" />
         </button>
       </PopoverTrigger>
       <PopoverContent align="end" sideOffset={10} className="p-4 bg-white rounded-2xl shadow-xl border border-gray-200 w-80">
@@ -99,4 +99,3 @@ const AppsMenu = () => {
 };
 
 export default ServiceNav;
-
