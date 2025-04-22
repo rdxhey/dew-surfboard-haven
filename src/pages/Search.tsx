@@ -1,9 +1,8 @@
-
 import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { TrendingUp, TrendingDown, Info, News, Calendar, ChartLine, Database } from 'lucide-react';
+import { TrendingUp, TrendingDown, Info, Newspaper, Calendar, ChartLine, Database } from 'lucide-react';
 import { Switch } from "@/components/ui/switch";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import Logo from '@/components/Logo';
@@ -21,7 +20,6 @@ const Search = () => {
   const [activeFinanceTab, setActiveFinanceTab] = useState('overview');
 
   useEffect(() => {
-    // Add a small delay for a smoother entrance animation
     const timer = setTimeout(() => {
       setLoaded(true);
     }, 100);
@@ -29,9 +27,7 @@ const Search = () => {
     return () => clearTimeout(timer);
   }, []);
 
-  // Update the component when search parameters change
   useEffect(() => {
-    // Handle type changes from URL
     console.log("Search type changed to:", type);
   }, [type]);
 
@@ -44,7 +40,6 @@ const Search = () => {
     navigate(`/search?q=${encodeURIComponent(query)}&type=${newType}`);
   };
 
-  // Mock data for financial search results
   const mockStockData = {
     ticker: "AAPL",
     name: "Apple Inc.",
@@ -73,7 +68,6 @@ const Search = () => {
 
     return (
       <div className="space-y-6">
-        {/* Stock Overview Card */}
         <Card className="overflow-hidden">
           <CardHeader className="flex flex-row items-center justify-between pb-2">
             <div>
@@ -206,7 +200,6 @@ const Search = () => {
 
   return (
     <div className="min-h-screen flex flex-col py-4 px-6 overflow-hidden">
-      {/* Header */}
       <div className="flex items-center justify-between mb-6">
         <div className={`flex items-center gap-4 ${loaded ? 'animate-slide-in-right' : 'translate-x-full'}`} style={{ transitionDuration: '0.5s' }}>
           <Logo size="sm" />
@@ -238,7 +231,6 @@ const Search = () => {
         </div>
       </div>
       
-      {/* Filters */}
       <div className={`mb-4 ${loaded ? 'animate-fade-up' : 'opacity-0 translate-y-10'}`} style={{ transitionDelay: '0.25s' }}>
         <div className="flex justify-between items-center">
           <div className="flex items-center gap-3">
@@ -264,7 +256,6 @@ const Search = () => {
         </div>
       </div>
       
-      {/* Search Results Content */}
       <div className={`flex-1 ${loaded ? 'animate-fade-up' : 'opacity-0 translate-y-10'}`} style={{ transitionDelay: '0.3s' }}>
         {type === 'finance' ? (
           renderFinancialSearchResults()
@@ -308,7 +299,6 @@ const Search = () => {
         </div>
       </div>
       
-      {/* Footer */}
       <Footer 
         className={`${loaded ? 'animate-slide-in-right' : 'translate-x-full'}`} 
         style={{ transitionDelay: '0.4s', transitionDuration: '0.5s' }} 
