@@ -86,7 +86,7 @@ const AppsMenu = () => {
       </DropdownMenuTrigger>
       <DropdownMenuContent 
         align="end" 
-        className="p-4 bg-white rounded-2xl shadow-xl border border-gray-200 w-80 z-[100]" // Increased z-index
+        className="p-4 bg-white rounded-2xl shadow-xl border border-gray-200 w-80 z-[9999]" // Fixed z-index to be very high
         sideOffset={6}
       >
         <div className="grid grid-cols-3 gap-4">
