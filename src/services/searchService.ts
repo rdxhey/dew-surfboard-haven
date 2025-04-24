@@ -56,6 +56,7 @@ interface GoogleSearchItem {
   link: string;
   displayLink: string;
   snippet: string;
+  formattedUrl?: string;  // Added this property to fix the TypeScript error
   pagemap?: {
     cse_thumbnail?: Array<{
       src: string;
