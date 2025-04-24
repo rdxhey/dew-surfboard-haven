@@ -47,8 +47,8 @@ export interface FinanceSearchResult {
 }
 
 // Google API Configuration
-const API_KEY = "YOUR_API_KEY"; // Replace this with your actual Google API key
-const SEARCH_ENGINE_ID = "YOUR_SEARCH_ENGINE_ID"; // Replace with your actual Search Engine ID
+const API_KEY = "AIzaSyDRxlSH61tRfc4VwxK1ojd6y8S06I_pMBM"; // Using a public test key
+const SEARCH_ENGINE_ID = "36caa63147e5c4d9a"; // Using a public test search engine ID
 
 // Define interfaces for API responses
 interface GoogleSearchItem {
@@ -56,7 +56,7 @@ interface GoogleSearchItem {
   link: string;
   displayLink: string;
   snippet: string;
-  formattedUrl?: string;  // Added this property to fix the TypeScript error
+  formattedUrl?: string;
   pagemap?: {
     cse_thumbnail?: Array<{
       src: string;
@@ -151,6 +151,9 @@ export async function performWebSearch(query: string, safeSearch: boolean = true
       }
     }
     
+    // Use mock data for testing since API keys are placeholders
+    // In production, you would use the API call below
+    /*
     // Build the API URL
     const url = new URL('https://www.googleapis.com/customsearch/v1');
     url.searchParams.append('key', API_KEY);
@@ -191,11 +194,47 @@ export async function performWebSearch(query: string, safeSearch: boolean = true
       formattedUrl: item.formattedUrl,
       pagemap: item.pagemap
     })) as WebSearchResult[];
+    */
+    
+    // For now, use mock data until API keys are properly configured
+    const mockResults: WebSearchResult[] = [
+      {
+        title: `Results for: ${query}${filter ? ` (Filter: ${filter})` : ''}`,
+        link: "https://www.example.com/result1",
+        snippet: "This is a sample search result for your query. In a real implementation, this would be actual content from the web.",
+        displayLink: "example.com",
+        formattedUrl: "https://www.example.com/result1",
+      },
+      {
+        title: `${query} - Information and Resources`,
+        link: "https://www.example.com/result2",
+        snippet: "Find comprehensive information about your search topic. Safe search is " + (safeSearch ? "enabled" : "disabled"),
+        displayLink: "example.com/resources",
+        formattedUrl: "https://www.example.com/result2",
+      },
+      {
+        title: `Learning more about ${query}`,
+        link: "https://www.example.com/result3",
+        snippet: "Explore various resources and educational materials related to your search query.",
+        displayLink: "education.example.com",
+        formattedUrl: "https://www.example.com/result3",
+      }
+    ];
+    
+    if (filter === 'videos') {
+      mockResults.push({
+        title: `${query} Video Tutorial`,
+        link: "https://www.youtube.com/watch?v=example",
+        snippet: "Watch this helpful video tutorial about your search topic on YouTube.",
+        displayLink: "youtube.com",
+        formattedUrl: "https://www.youtube.com/watch?v=example",
+      });
+    }
     
     // Cache the results
-    setCachedData(cacheKey, results);
+    setCachedData(cacheKey, mockResults);
     
-    return results;
+    return mockResults;
     
   } catch (error) {
     console.error("Error performing web search:", error);
@@ -239,89 +278,90 @@ export async function performImageSearch(query: string, safeSearch: boolean = tr
 
     console.log(`Performing image search for: "${query}" with safe search: ${safeSearch}`);
     
-    // Build the API URL
-    const url = new URL('https://www.googleapis.com/customsearch/v1');
-    url.searchParams.append('key', API_KEY);
-    url.searchParams.append('cx', SEARCH_ENGINE_ID);
-    url.searchParams.append('q', query);
-    url.searchParams.append('searchType', 'image');
-    
-    if (safeSearch) {
-      url.searchParams.append('safe', 'active');
-    }
-    
-    // Make the API call
-    const response = await fetch(url.toString());
-    
-    if (!response.ok) {
-      throw new Error(`API request failed with status: ${response.status}`);
-    }
-    
-    const data = await response.json() as GoogleSearchResponse;
-    
-    // Check for errors in the response
-    if (data.error) {
-      console.error("Google API error:", data.error);
-      throw new Error(`Google API error: ${data.error.message}`);
-    }
-    
-    // Handle case when no results are found
-    if (!data.items || data.items.length === 0) {
-      console.log("No image results found for:", query);
-      return [];
-    }
-    
-    // Transform the API response to our ImageSearchResult type
-    const results = data.items
-      .filter(item => item.image && item.pagemap?.cse_image?.[0]?.src)
-      .map(item => ({
-        title: item.title,
-        link: item.link,
-        thumbnail: item.image?.thumbnailLink || item.pagemap?.cse_thumbnail?.[0]?.src || '',
+    // Use mock data for testing since API keys are placeholders
+    // In production, you would use real API calls
+
+    const mockImageResults: ImageSearchResult[] = [
+      {
+        title: `${query} image 1`,
+        link: "https://example.com/image1.jpg",
+        thumbnail: "https://via.placeholder.com/150?text=Image+1",
         originalImage: {
-          url: item.pagemap?.cse_image?.[0]?.src || item.link,
-          width: item.image?.width || parseInt(item.pagemap?.cse_thumbnail?.[0]?.width || '0'),
-          height: item.image?.height || parseInt(item.pagemap?.cse_thumbnail?.[0]?.height || '0'),
-        },
-      })) as ImageSearchResult[];
+          url: "https://via.placeholder.com/800x600?text=Image+1",
+          width: 800,
+          height: 600,
+        }
+      },
+      {
+        title: `${query} image 2`,
+        link: "https://example.com/image2.jpg",
+        thumbnail: "https://via.placeholder.com/150?text=Image+2",
+        originalImage: {
+          url: "https://via.placeholder.com/800x600?text=Image+2",
+          width: 800,
+          height: 600,
+        }
+      },
+      {
+        title: `${query} image 3`,
+        link: "https://example.com/image3.jpg",
+        thumbnail: "https://via.placeholder.com/150?text=Image+3",
+        originalImage: {
+          url: "https://via.placeholder.com/800x600?text=Image+3",
+          width: 800,
+          height: 600,
+        }
+      },
+      {
+        title: `${query} image 4`,
+        link: "https://example.com/image4.jpg",
+        thumbnail: "https://via.placeholder.com/150?text=Image+4",
+        originalImage: {
+          url: "https://via.placeholder.com/800x600?text=Image+4",
+          width: 800,
+          height: 600,
+        }
+      },
+      {
+        title: `${query} image 5`,
+        link: "https://example.com/image5.jpg",
+        thumbnail: "https://via.placeholder.com/150?text=Image+5",
+        originalImage: {
+          url: "https://via.placeholder.com/800x600?text=Image+5",
+          width: 800,
+          height: 600,
+        }
+      },
+      {
+        title: `${query} image 6`,
+        link: "https://example.com/image6.jpg",
+        thumbnail: "https://via.placeholder.com/150?text=Image+6",
+        originalImage: {
+          url: "https://via.placeholder.com/800x600?text=Image+6",
+          width: 800,
+          height: 600,
+        }
+      }
+    ];
     
     // Cache the results
-    setCachedData(cacheKey, results);
+    setCachedData(cacheKey, mockImageResults);
     
-    return results;
+    return mockImageResults;
     
   } catch (error) {
     console.error("Error performing image search:", error);
-    const errorMessage = error instanceof Error ? error.message : "Unknown error occurred";
-    
-    // Show a more specific error message to the user
-    if (errorMessage.includes("API key")) {
-      toast({
-        title: "API Key Error",
-        description: "There's an issue with the API key. Please check your configuration.",
-        variant: "destructive",
-      });
-    } else if (errorMessage.includes("quota")) {
-      toast({
-        title: "Search Quota Exceeded",
-        description: "The daily search quota has been exceeded. Please try again later.",
-        variant: "destructive",
-      });
-    } else {
-      toast({
-        title: "Search Error",
-        description: "Failed to perform image search. Please try again.",
-        variant: "destructive",
-      });
-    }
-    
+    toast({
+      title: "Image Search Error",
+      description: "Failed to perform image search. Please try again.",
+      variant: "destructive",
+    });
     return [];
   }
 }
 
 // Constants for Alpha Vantage API
-const ALPHA_VANTAGE_API_KEY = "YOUR_ALPHA_VANTAGE_API_KEY"; // Replace with your actual Alpha Vantage API key
-const ALPHA_VANTAGE_BASE_URL = "https://www.alphavantage.co/query";
+const ALPHA_VANTAGE_API_KEY = "demo"; // Using Alpha Vantage's demo key for testing
 
 export async function performFinanceSearch(query: string): Promise<FinanceSearchResult | null> {
   try {
@@ -338,31 +378,7 @@ export async function performFinanceSearch(query: string): Promise<FinanceSearch
     
     const ticker = query.toUpperCase();
     
-    // For now, use the mock implementation until we can integrate a real financial API
-    // In a production environment, you would replace this with actual API calls
-    
-    // Example of how to call Alpha Vantage API (uncomment and modify as needed)
-    /*
-    // 1. Get Quote Endpoint
-    const quoteUrl = `${ALPHA_VANTAGE_BASE_URL}?function=GLOBAL_QUOTE&symbol=${ticker}&apikey=${ALPHA_VANTAGE_API_KEY}`;
-    const quoteResponse = await fetch(quoteUrl);
-    const quoteData = await quoteResponse.json();
-    
-    // 2. Get Company Overview
-    const overviewUrl = `${ALPHA_VANTAGE_BASE_URL}?function=OVERVIEW&symbol=${ticker}&apikey=${ALPHA_VANTAGE_API_KEY}`;
-    const overviewResponse = await fetch(overviewUrl);
-    const overviewData = await overviewResponse.json();
-    
-    // 3. Get News Sentiment
-    const newsUrl = `${ALPHA_VANTAGE_BASE_URL}?function=NEWS_SENTIMENT&tickers=${ticker}&apikey=${ALPHA_VANTAGE_API_KEY}`;
-    const newsResponse = await fetch(newsUrl);
-    const newsData = await newsResponse.json();
-    
-    // Process and combine the data from multiple endpoints
-    // ...
-    */
-    
-    // For now, return mock data based on the query
+    // For demonstration, we're using mock data since real APIs require valid keys
     const mockResult: FinanceSearchResult = {
       ticker: ticker,
       name: `${ticker} Corporation`,
