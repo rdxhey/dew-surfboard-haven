@@ -84,7 +84,11 @@ const AppsMenu = () => {
           </div>
         </button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="end" className="p-4 bg-white rounded-2xl shadow-xl border border-gray-200 w-80 z-50">
+      <DropdownMenuContent 
+        align="end" 
+        className="p-4 bg-white rounded-2xl shadow-xl border border-gray-200 w-80 z-[100]" // Increased z-index
+        sideOffset={6}
+      >
         <div className="grid grid-cols-3 gap-4">
           {SERVICES.map((svc, i) => (
             <DropdownMenuItem
