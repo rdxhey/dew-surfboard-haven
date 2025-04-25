@@ -1,12 +1,12 @@
-
 import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { TrendingUp, TrendingDown, Newspaper, Calendar, ChartLine, Database, Loader } from 'lucide-react';
+import { TrendingUp, TrendingDown, Newspaper, Calendar, ChartLine, Database, Loader, Star } from 'lucide-react';
 import { Switch } from "@/components/ui/switch";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Button } from "@/components/ui/button";
 import { toast } from "@/hooks/use-toast";
 import Logo from '@/components/Logo';
 import SearchBar from '@/components/SearchBar';
@@ -15,9 +15,13 @@ import {
   performWebSearch,
   performImageSearch,
   performFinanceSearch,
+  performVideoSearch,
+  performNewsSearch,
   WebSearchResult,
   ImageSearchResult,
-  FinanceSearchResult
+  FinanceSearchResult,
+  VideoSearchResult,
+  NewsSearchResult
 } from '@/services/searchService';
 
 const Search = () => {
@@ -30,12 +34,15 @@ const Search = () => {
   const [safeSearch, setSafeSearch] = useState(true);
   const [activeFinanceTab, setActiveFinanceTab] = useState('overview');
   const [activeFilter, setActiveFilter] = useState('all');
+  const [favoriteStocks, setFavoriteStocks] = useState<string[]>([]);
   
   // State for search results
   const [isSearching, setIsSearching] = useState(false);
   const [webResults, setWebResults] = useState<WebSearchResult[]>([]);
   const [imageResults, setImageResults] = useState<ImageSearchResult[]>([]);
   const [financeResult, setFinanceResult] = useState<FinanceSearchResult | null>(null);
+  const [videoResults, setVideoResults] = useState<VideoSearchResult[]>([]);
+  const [newsResults, setNewsResults] = useState<NewsSearchResult[]>([]);
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -43,6 +50,18 @@ const Search = () => {
     }, 100);
     
     return () => clearTimeout(timer);
+  }, []);
+
+  useEffect(() => {
+    // Load favorite stocks from localStorage
+    const savedFavorites = localStorage.getItem('favoriteStocks');
+    if (savedFavorites) {
+      try {
+        setFavoriteStocks(JSON.parse(savedFavorites));
+      } catch (e) {
+        console.error("Error loading favorite stocks:", e);
+      }
+    }
   }, []);
 
   useEffect(() => {
@@ -66,6 +85,12 @@ const Search = () => {
       } else if (type === 'finance') {
         const result = await performFinanceSearch(query);
         setFinanceResult(result);
+      } else if (type === 'videos') {
+        const results = await performVideoSearch(query, safeSearch);
+        setVideoResults(results);
+      } else if (type === 'news') {
+        const results = await performNewsSearch(query);
+        setNewsResults(results);
       }
     } catch (error) {
       console.error('Search error:', error);
@@ -99,6 +124,26 @@ const Search = () => {
 
   const handleSafeSearchChange = (newValue: boolean) => {
     setSafeSearch(newValue);
+  };
+  
+  const toggleFavoriteStock = (ticker: string) => {
+    let updatedFavorites: string[];
+    if (favoriteStocks.includes(ticker)) {
+      updatedFavorites = favoriteStocks.filter(stock => stock !== ticker);
+      toast({
+        title: "Removed from Favorites",
+        description: `${ticker} has been removed from your favorites`,
+      });
+    } else {
+      updatedFavorites = [...favoriteStocks, ticker];
+      toast({
+        title: "Added to Favorites",
+        description: `${ticker} has been added to your favorites`,
+      });
+    }
+    
+    setFavoriteStocks(updatedFavorites);
+    localStorage.setItem('favoriteStocks', JSON.stringify(updatedFavorites));
   };
 
   const renderWebSearchResults = () => {
@@ -210,6 +255,126 @@ const Search = () => {
     );
   };
 
+  const renderVideoSearchResults = () => {
+    if (isSearching) {
+      return (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-6">
+          {[...Array(6)].map((_, i) => (
+            <Skeleton key={i} className="rounded-lg h-48" />
+          ))}
+        </div>
+      );
+    }
+
+    if (!query) {
+      return (
+        <div className="text-center py-12">
+          <p className="text-gray-500 mb-2">Enter a search term to find videos</p>
+          <p className="text-sm text-gray-400">Try searching for tutorials, reviews, demonstrations, and more</p>
+        </div>
+      );
+    }
+
+    if (videoResults.length === 0) {
+      return (
+        <div className="text-center py-12">
+          <p className="text-gray-600 mb-2">No videos found for "{query}"</p>
+          <p className="text-sm text-gray-500">Try different keywords or check your spelling</p>
+        </div>
+      );
+    }
+
+    return (
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-6">
+        {videoResults.map((video, index) => (
+          <a 
+            key={index} 
+            href={video.url}
+            target="_blank" 
+            rel="noopener noreferrer"
+            className="block rounded-lg overflow-hidden hover:shadow-lg transition-shadow duration-300 bg-white"
+          >
+            <div className="relative pb-[56.25%]">
+              <img
+                src={video.thumbnail}
+                alt={video.title}
+                className="absolute inset-0 w-full h-full object-cover"
+                loading="lazy"
+              />
+              <span className="absolute bottom-2 right-2 bg-black/70 text-white px-2 py-1 text-xs rounded">
+                {video.duration}
+              </span>
+            </div>
+            <div className="p-3">
+              <h3 className="font-medium text-sm line-clamp-2 mb-1">{video.title}</h3>
+              <div className="flex justify-between items-center">
+                <span className="text-xs text-gray-500">{video.channel}</span>
+                <span className="text-xs text-gray-500">{video.views} views</span>
+              </div>
+            </div>
+          </a>
+        ))}
+      </div>
+    );
+  };
+
+  const renderNewsSearchResults = () => {
+    if (isSearching) {
+      return (
+        <div className="space-y-6 mt-6">
+          {[...Array(4)].map((_, i) => (
+            <div key={i} className="space-y-2">
+              <Skeleton className="h-7 w-2/3" />
+              <Skeleton className="h-4 w-1/3" />
+              <Skeleton className="h-4 w-full" />
+            </div>
+          ))}
+        </div>
+      );
+    }
+
+    if (!query) {
+      return (
+        <div className="text-center py-12">
+          <p className="text-gray-500 mb-2">Enter a search term to find news</p>
+          <p className="text-sm text-gray-400">Try searching for current events, topics, or headlines</p>
+        </div>
+      );
+    }
+
+    if (newsResults.length === 0) {
+      return (
+        <div className="text-center py-12">
+          <p className="text-gray-600 mb-2">No news found for "{query}"</p>
+          <p className="text-sm text-gray-500">Try different keywords or check your spelling</p>
+        </div>
+      );
+    }
+
+    return (
+      <div className="space-y-6 mt-6">
+        {newsResults.map((article, index) => (
+          <div key={index} className="border-b pb-4 last:border-0">
+            <a 
+              href={article.url} 
+              className="text-blue-600 hover:underline text-lg font-medium block"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              {article.title}
+            </a>
+            <div className="flex items-center text-sm text-gray-500 mt-1 mb-2">
+              <span>{article.source}</span>
+              <span className="mx-2">•</span>
+              <span>{article.publishedAt}</span>
+            </div>
+            <p className="text-gray-600">{article.description}</p>
+          </div>
+        ))}
+      </div>
+    );
+  };
+
   const renderFinancialSearchResults = () => {
     if (isSearching) {
       return (
@@ -248,12 +413,28 @@ const Search = () => {
       );
     }
 
+    const isFavorite = favoriteStocks.includes(financeResult.ticker);
+
     return (
       <div className="space-y-6">
         <Card className="overflow-hidden">
           <CardHeader className="flex flex-row items-center justify-between pb-2">
             <div>
-              <CardTitle className="text-2xl font-bold">{financeResult.ticker}</CardTitle>
+              <div className="flex items-center gap-2">
+                <CardTitle className="text-2xl font-bold">{financeResult.ticker}</CardTitle>
+                <Button 
+                  variant="ghost" 
+                  size="icon" 
+                  className="h-8 w-8" 
+                  onClick={() => toggleFavoriteStock(financeResult.ticker)}
+                  aria-label={isFavorite ? "Remove from favorites" : "Add to favorites"}
+                >
+                  <Star 
+                    size={16} 
+                    className={isFavorite ? "fill-yellow-400 text-yellow-400" : "text-gray-400"} 
+                  />
+                </Button>
+              </div>
               <p className="text-md text-gray-600">{financeResult.name}</p>
             </div>
             <div className="flex items-center">
@@ -312,7 +493,7 @@ const Search = () => {
                   </div>
                 </div>
                 
-                <div className="mt-4 flex gap-2">
+                <div className="mt-4 flex gap-2 flex-wrap">
                   <button className="px-3 py-1 text-xs rounded bg-gray-200 hover:bg-gray-300">1D</button>
                   <button className="px-3 py-1 text-xs rounded bg-gray-200 hover:bg-gray-300">1W</button>
                   <button className="px-3 py-1 text-xs rounded bg-gray-200 hover:bg-gray-300">1M</button>
@@ -376,6 +557,39 @@ const Search = () => {
             </Tabs>
           </CardContent>
         </Card>
+        
+        {favoriteStocks.length > 0 && (
+          <Card className="overflow-hidden mt-6">
+            <CardHeader>
+              <CardTitle>Your Favorite Stocks</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+                {favoriteStocks.map((ticker) => (
+                  <div key={ticker} className="bg-gray-50 p-3 rounded-lg border border-gray-200">
+                    <div className="flex justify-between items-center">
+                      <span className="font-medium">{ticker}</span>
+                      <Button 
+                        variant="ghost" 
+                        size="icon" 
+                        className="h-6 w-6" 
+                        onClick={() => toggleFavoriteStock(ticker)}
+                      >
+                        <Star size={14} className="fill-yellow-400 text-yellow-400" />
+                      </Button>
+                    </div>
+                    <button 
+                      className="text-primary text-sm mt-1 hover:underline"
+                      onClick={() => navigate(`/search?q=${ticker}&type=finance`)}
+                    >
+                      View details
+                    </button>
+                  </div>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+        )}
       </div>
     );
   };
@@ -402,6 +616,18 @@ const Search = () => {
               className={`text-sm ${type === 'images' ? 'text-primary border-b-2 border-primary' : 'text-gray-600 hover:text-primary'}`}
             >
               Images
+            </button>
+            <button 
+              onClick={() => handleTypeChange('videos')} 
+              className={`text-sm ${type === 'videos' ? 'text-primary border-b-2 border-primary' : 'text-gray-600 hover:text-primary'}`}
+            >
+              Videos
+            </button>
+            <button 
+              onClick={() => handleTypeChange('news')} 
+              className={`text-sm ${type === 'news' ? 'text-primary border-b-2 border-primary' : 'text-gray-600 hover:text-primary'}`}
+            >
+              News
             </button>
             <button 
               onClick={() => handleTypeChange('finance')} 
@@ -454,18 +680,27 @@ const Search = () => {
           renderFinancialSearchResults()
         ) : type === 'images' ? (
           renderImageSearchResults()
+        ) : type === 'videos' ? (
+          renderVideoSearchResults()
+        ) : type === 'news' ? (
+          renderNewsSearchResults()
         ) : (
           renderWebSearchResults()
         )}
 
         {query && !isSearching && (
           <div className="text-center text-gray-500 mt-8">
-            {type !== 'finance' && webResults.length > 0 && (
-              <p>Showing {type === 'images' ? imageResults.length : webResults.length} results for: {query}</p>
+            {(type !== 'finance' && webResults.length > 0) || 
+             (type === 'images' && imageResults.length > 0) || 
+             (type === 'videos' && videoResults.length > 0) || 
+             (type === 'news' && newsResults.length > 0) && (
+              <p>Showing results for: {query}</p>
             )}
             <p className="text-xs mt-1">Type: {
               type === 'images' ? 'Image Search' : 
-              type === 'finance' ? 'Financial Search' : 'Web Search'
+              type === 'finance' ? 'Financial Search' : 
+              type === 'videos' ? 'Video Search' : 
+              type === 'news' ? 'News Search' : 'Web Search'
             }</p>
           </div>
         )}

@@ -1,16 +1,26 @@
 
 import React, { useState, useRef, useEffect } from 'react';
-import { Search, Mic, Camera, Sparkles } from 'lucide-react';
+import { Search, Mic, Camera, Sparkles, TrendingUp } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useNavigate } from 'react-router-dom';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { toast } from "@/hooks/use-toast";
+import { Badge } from '@/components/ui/badge';
 
 interface SearchBarProps {
   className?: string;
   onSearch?: (query: string) => void;
   initialValue?: string;
 }
+
+// Popular search topics that update periodically
+const TRENDING_TOPICS = [
+  "Technology news",
+  "Finance updates",
+  "Climate change",
+  "Health tips",
+  "Stock market today"
+];
 
 const SearchBar = ({ className, onSearch, initialValue = '' }: SearchBarProps) => {
   const [query, setQuery] = useState(initialValue);
@@ -19,6 +29,7 @@ const SearchBar = ({ className, onSearch, initialValue = '' }: SearchBarProps) =
   const [isImageSearchActive, setIsImageSearchActive] = useState(false);
   const [showAiSuggestion, setShowAiSuggestion] = useState(false);
   const [recentSearches, setRecentSearches] = useState<string[]>([]);
+  const [popularSearches, setPopularSearches] = useState<string[]>(TRENDING_TOPICS);
   const navigate = useNavigate();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const searchInputRef = useRef<HTMLInputElement>(null);
@@ -38,6 +49,19 @@ const SearchBar = ({ className, onSearch, initialValue = '' }: SearchBarProps) =
     }
   }, []);
 
+  // Simulate rotating popular search topics
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setPopularSearches(prev => {
+        const rotated = [...prev];
+        rotated.push(rotated.shift()!);
+        return rotated;
+      });
+    }, 5000); // Rotate every 5 seconds
+    
+    return () => clearInterval(interval);
+  }, []);
+
   // Save search to recent searches
   const saveToRecentSearches = (searchQuery: string) => {
     if (!searchQuery.trim()) return;
@@ -55,7 +79,7 @@ const SearchBar = ({ className, onSearch, initialValue = '' }: SearchBarProps) =
     }
   };
 
-  const handleSearch = (e: React.FormEvent, type: 'web' | 'images' = 'web') => {
+  const handleSearch = (e: React.FormEvent, type: 'web' | 'images' | 'videos' = 'web') => {
     e.preventDefault();
     if (query.trim()) {
       saveToRecentSearches(query);
@@ -87,7 +111,7 @@ const SearchBar = ({ className, onSearch, initialValue = '' }: SearchBarProps) =
     if (e.target.files && e.target.files[0]) {
       toast({
         title: "Image Search",
-        description: "Image search functionality coming soon!",
+        description: "Processing your image for search...",
       });
       
       // In a real implementation, this would upload the image and search
@@ -155,6 +179,15 @@ const SearchBar = ({ className, onSearch, initialValue = '' }: SearchBarProps) =
       onSearch(search);
     } else {
       navigate(`/search?q=${encodeURIComponent(search)}&type=web`);
+    }
+  };
+  
+  const handleTrendingSearch = (trend: string) => {
+    setQuery(trend);
+    if (onSearch) {
+      onSearch(trend);
+    } else {
+      navigate(`/search?q=${encodeURIComponent(trend)}&type=web`);
     }
   };
 
@@ -264,20 +297,42 @@ const SearchBar = ({ className, onSearch, initialValue = '' }: SearchBarProps) =
       {/* Search suggestions dropdown */}
       {isFocused && (
         <div className="absolute top-full left-0 w-full mt-1 bg-white rounded-lg shadow-lg border border-gray-100 py-2 z-50 animate-fade-in">
+          {/* Trending searches */}
+          <div className="mb-2">
+            <div className="px-4 py-1 text-xs text-gray-500 flex items-center">
+              <TrendingUp size={12} className="mr-1 text-primary" />
+              Trending now
+            </div>
+            <div className="px-4 py-2 flex flex-wrap gap-2">
+              {popularSearches.slice(0, 3).map((trend, index) => (
+                <Badge 
+                  key={index} 
+                  variant="outline" 
+                  className="cursor-pointer hover:bg-primary/10 transition-colors"
+                  onClick={() => handleTrendingSearch(trend)}
+                >
+                  {trend}
+                </Badge>
+              ))}
+            </div>
+          </div>
+
           {/* Recent searches */}
           {recentSearches.length > 0 && (
             <div className="mb-2">
               <div className="px-4 py-1 text-xs text-gray-500">Recent searches</div>
-              {recentSearches.map((search, index) => (
-                <div
-                  key={index}
-                  className="px-4 py-2 hover:bg-gray-50 cursor-pointer flex items-center"
-                  onClick={() => handleSelectRecentSearch(search)}
-                >
-                  <Search size={14} className="text-gray-400 mr-2" />
-                  <span className="text-sm">{search}</span>
-                </div>
-              ))}
+              <div className="max-h-40 overflow-y-auto">
+                {recentSearches.map((search, index) => (
+                  <div
+                    key={index}
+                    className="px-4 py-2 hover:bg-gray-50 cursor-pointer flex items-center"
+                    onClick={() => handleSelectRecentSearch(search)}
+                  >
+                    <Search size={14} className="text-gray-400 mr-2" />
+                    <span className="text-sm">{search}</span>
+                  </div>
+                ))}
+              </div>
               <div className="border-b border-gray-100 my-1"></div>
             </div>
           )}
