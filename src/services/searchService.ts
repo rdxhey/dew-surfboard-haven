@@ -1,4 +1,3 @@
-
 import { toast } from "@/hooks/use-toast";
 
 // Define types for search results
@@ -66,12 +65,44 @@ export interface FinanceSearchResult {
 }
 
 // API Configuration
-// In production, you should replace these with your actual API keys
-const GOOGLE_API_KEY = "AIzaSyDRxlSH61tRfc4VwxK1ojd6y8S06I_pMBM"; // Replace with your actual API key
-const SEARCH_ENGINE_ID = "36caa63147e5c4d9a"; // Replace with your actual search engine ID
-const NEWS_API_KEY = "your_news_api_key"; // Replace with actual News API key
-const ALPHA_VANTAGE_API_KEY = "demo"; // Replace with your actual Alpha Vantage API key
-const YOUTUBE_API_KEY = "your_youtube_api_key"; // Replace with your actual YouTube API key
+interface ApiConfig {
+  googleApiKey: string;
+  searchEngineId: string;
+  newsApiKey: string;
+  alphaVantageApiKey: string;
+  youtubeApiKey: string;
+  useMockData: boolean;
+}
+
+// Get API configuration from localStorage
+const getApiConfig = (): ApiConfig => {
+  const defaultConfig: ApiConfig = {
+    googleApiKey: "",
+    searchEngineId: "",
+    newsApiKey: "",
+    alphaVantageApiKey: "demo",
+    youtubeApiKey: "",
+    useMockData: true
+  };
+  
+  try {
+    const storedKeys = localStorage.getItem("searchApiKeys");
+    const storedUseMock = localStorage.getItem("useMockData");
+    
+    if (storedKeys) {
+      const parsedKeys = JSON.parse(storedKeys);
+      return {
+        ...defaultConfig,
+        ...parsedKeys,
+        useMockData: storedUseMock === null ? true : storedUseMock === "true"
+      };
+    }
+  } catch (e) {
+    console.error("Error reading API configuration:", e);
+  }
+  
+  return defaultConfig;
+};
 
 // Define interfaces for API responses
 interface GoogleSearchItem {
@@ -188,6 +219,9 @@ export async function performWebSearch(query: string, safeSearch: boolean = true
 
     console.log(`Performing web search for: "${query}" with safe search: ${safeSearch} and filter: ${filter || 'none'}`);
     
+    // Get API configuration
+    const config = getApiConfig();
+    
     // Build query parameters
     let searchQuery = query;
     if (filter) {
@@ -207,54 +241,64 @@ export async function performWebSearch(query: string, safeSearch: boolean = true
       }
     }
     
-    // In production, uncomment and use the real API call
-    /*
-    // Build the API URL
-    const url = new URL('https://www.googleapis.com/customsearch/v1');
-    url.searchParams.append('key', GOOGLE_API_KEY);
-    url.searchParams.append('cx', SEARCH_ENGINE_ID);
-    url.searchParams.append('q', searchQuery);
-    
-    if (safeSearch) {
-      url.searchParams.append('safe', 'active');
+    // Check if we should use real API data
+    if (!config.useMockData && config.googleApiKey && config.searchEngineId) {
+      // Build the API URL
+      const url = new URL('https://www.googleapis.com/customsearch/v1');
+      url.searchParams.append('key', config.googleApiKey);
+      url.searchParams.append('cx', config.searchEngineId);
+      url.searchParams.append('q', searchQuery);
+      
+      if (safeSearch) {
+        url.searchParams.append('safe', 'active');
+      }
+      
+      try {
+        // Make the API call
+        const response = await fetch(url.toString());
+        
+        if (!response.ok) {
+          throw new Error(`API request failed with status: ${response.status}`);
+        }
+        
+        const data = await response.json() as GoogleSearchResponse;
+        
+        // Check for errors in the response
+        if (data.error) {
+          console.error("Google API error:", data.error);
+          throw new Error(`Google API error: ${data.error.message}`);
+        }
+        
+        // Handle case when no results are found
+        if (!data.items || data.items.length === 0) {
+          console.log("No search results found for:", query);
+          return [];
+        }
+        
+        // Transform the API response to our WebSearchResult type
+        const results = data.items.map(item => ({
+          title: item.title,
+          link: item.link,
+          snippet: item.snippet,
+          displayLink: item.displayLink,
+          formattedUrl: item.formattedUrl,
+          pagemap: item.pagemap
+        })) as WebSearchResult[];
+        
+        // Cache the results
+        setCachedData(cacheKey, results);
+        
+        return results;
+      } catch (error) {
+        console.error("Error with Google Search API:", error);
+        toast({
+          title: "API Error",
+          description: "There was an error with the Google Search API. Falling back to mock data.",
+          variant: "destructive",
+        });
+        // Fall back to mock data
+      }
     }
-    
-    // Make the API call
-    const response = await fetch(url.toString());
-    
-    if (!response.ok) {
-      throw new Error(`API request failed with status: ${response.status}`);
-    }
-    
-    const data = await response.json() as GoogleSearchResponse;
-    
-    // Check for errors in the response
-    if (data.error) {
-      console.error("Google API error:", data.error);
-      throw new Error(`Google API error: ${data.error.message}`);
-    }
-    
-    // Handle case when no results are found
-    if (!data.items || data.items.length === 0) {
-      console.log("No search results found for:", query);
-      return [];
-    }
-    
-    // Transform the API response to our WebSearchResult type
-    const results = data.items.map(item => ({
-      title: item.title,
-      link: item.link,
-      snippet: item.snippet,
-      displayLink: item.displayLink,
-      formattedUrl: item.formattedUrl,
-      pagemap: item.pagemap
-    })) as WebSearchResult[];
-    
-    // Cache the results
-    setCachedData(cacheKey, results);
-    
-    return results;
-    */
     
     // For now, use improved mock data until API keys are properly configured
     const mockResults: WebSearchResult[] = [
@@ -377,45 +421,58 @@ export async function performImageSearch(query: string, safeSearch: boolean = tr
 
     console.log(`Performing image search for: "${query}" with safe search: ${safeSearch}`);
     
-    // In production, uncomment and use the real API call
-    /*
-    // Build the API URL
-    const url = new URL('https://www.googleapis.com/customsearch/v1');
-    url.searchParams.append('key', GOOGLE_API_KEY);
-    url.searchParams.append('cx', SEARCH_ENGINE_ID);
-    url.searchParams.append('q', query);
-    url.searchParams.append('searchType', 'image');
+    // Get API configuration
+    const config = getApiConfig();
     
-    if (safeSearch) {
-      url.searchParams.append('safe', 'active');
-    }
-    
-    // Make the API call
-    const response = await fetch(url.toString());
-    
-    if (!response.ok) {
-      throw new Error(`API request failed with status: ${response.status}`);
-    }
-    
-    const data = await response.json() as GoogleSearchResponse;
-    
-    // Transform the API response to our ImageSearchResult type
-    const results = data.items?.map(item => ({
-      title: item.title,
-      link: item.link,
-      thumbnail: item.image?.thumbnailLink || '',
-      originalImage: {
-        url: item.link,
-        width: item.image?.width || 800,
-        height: item.image?.height || 600
+    // Check if we should use real API data
+    if (!config.useMockData && config.googleApiKey && config.searchEngineId) {
+      try {
+        // Build the API URL
+        const url = new URL('https://www.googleapis.com/customsearch/v1');
+        url.searchParams.append('key', config.googleApiKey);
+        url.searchParams.append('cx', config.searchEngineId);
+        url.searchParams.append('q', query);
+        url.searchParams.append('searchType', 'image');
+        
+        if (safeSearch) {
+          url.searchParams.append('safe', 'active');
+        }
+        
+        // Make the API call
+        const response = await fetch(url.toString());
+        
+        if (!response.ok) {
+          throw new Error(`API request failed with status: ${response.status}`);
+        }
+        
+        const data = await response.json() as GoogleSearchResponse;
+        
+        // Transform the API response to our ImageSearchResult type
+        const results = data.items?.map(item => ({
+          title: item.title,
+          link: item.link,
+          thumbnail: item.image?.thumbnailLink || '',
+          originalImage: {
+            url: item.link,
+            width: item.image?.width || 800,
+            height: item.image?.height || 600
+          }
+        })) || [];
+        
+        // Cache the results
+        setCachedData(cacheKey, results);
+        
+        return results;
+      } catch (error) {
+        console.error("Error with Google Image Search API:", error);
+        toast({
+          title: "API Error",
+          description: "There was an error with the Google Image Search API. Falling back to mock data.",
+          variant: "destructive",
+        });
+        // Fall back to mock data
       }
-    })) || [];
-    
-    // Cache the results
-    setCachedData(cacheKey, results);
-    
-    return results;
-    */
+    }
 
     // Use enhanced mock data for testing
     const mockImageResults: ImageSearchResult[] = Array.from({ length: 12 }, (_, i) => ({
@@ -458,26 +515,56 @@ export async function performVideoSearch(query: string, safeSearch: boolean = tr
 
     console.log(`Performing video search for: "${query}" with safe search: ${safeSearch}`);
     
-    // In production, you would use the YouTube API or similar
-    /*
-    const url = new URL('https://www.googleapis.com/youtube/v3/search');
-    url.searchParams.append('part', 'snippet');
-    url.searchParams.append('maxResults', '25');
-    url.searchParams.append('q', query);
-    url.searchParams.append('key', YOUTUBE_API_KEY);
-    url.searchParams.append('type', 'video');
-    url.searchParams.append('safeSearch', safeSearch ? 'strict' : 'none');
+    // Get API configuration
+    const config = getApiConfig();
     
-    const response = await fetch(url.toString());
-    if (!response.ok) {
-      throw new Error(`YouTube API request failed: ${response.status}`);
+    // Check if we should use real API data
+    if (!config.useMockData && config.youtubeApiKey) {
+      try {
+        const url = new URL('https://www.googleapis.com/youtube/v3/search');
+        url.searchParams.append('part', 'snippet');
+        url.searchParams.append('maxResults', '25');
+        url.searchParams.append('q', query);
+        url.searchParams.append('key', config.youtubeApiKey);
+        url.searchParams.append('type', 'video');
+        url.searchParams.append('safeSearch', safeSearch ? 'strict' : 'none');
+        
+        const response = await fetch(url.toString());
+        if (!response.ok) {
+          throw new Error(`YouTube API request failed: ${response.status}`);
+        }
+        
+        const data = await response.json();
+        
+        // Process YouTube API response
+        const videoResults = await Promise.all(data.items.map(async (item: any) => {
+          // Get video duration and statistics in a real implementation
+          // This would require additional API calls
+          return {
+            title: item.snippet.title,
+            url: `https://www.youtube.com/watch?v=${item.id.videoId}`,
+            thumbnail: item.snippet.thumbnails.high.url,
+            duration: "3:42", // Would come from content details API
+            channel: item.snippet.channelTitle,
+            views: "125K", // Would come from statistics API
+            publishedAt: formatRelativeTime(new Date(item.snippet.publishedAt))
+          };
+        }));
+        
+        // Cache the results
+        setCachedData(cacheKey, videoResults);
+        
+        return videoResults;
+      } catch (error) {
+        console.error("Error with YouTube API:", error);
+        toast({
+          title: "API Error",
+          description: "There was an error with the YouTube API. Falling back to mock data.",
+          variant: "destructive",
+        });
+        // Fall back to mock data
+      }
     }
-    
-    const data = await response.json();
-    
-    // Would then need to make additional API calls to get video durations
-    // ...
-    */
     
     // For now, use mock data
     const durations = ['2:45', '10:32', '5:17', '3:09', '15:01', '7:23', '4:56', '8:30', '1:22', '6:11'];
@@ -531,28 +618,46 @@ export async function performNewsSearch(query: string): Promise<NewsSearchResult
 
     console.log(`Performing news search for: "${query}"`);
     
-    // In production, you'd use a real news API
-    /*
-    const url = new URL('https://newsapi.org/v2/everything');
-    url.searchParams.append('q', query);
-    url.searchParams.append('sortBy', 'publishedAt');
-    url.searchParams.append('apiKey', NEWS_API_KEY);
+    // Get API configuration
+    const config = getApiConfig();
     
-    const response = await fetch(url.toString());
-    if (!response.ok) {
-      throw new Error(`News API request failed: ${response.status}`);
+    // Check if we should use real API data
+    if (!config.useMockData && config.newsApiKey) {
+      try {
+        const url = new URL('https://newsapi.org/v2/everything');
+        url.searchParams.append('q', query);
+        url.searchParams.append('sortBy', 'publishedAt');
+        url.searchParams.append('apiKey', config.newsApiKey);
+        
+        const response = await fetch(url.toString());
+        if (!response.ok) {
+          throw new Error(`News API request failed: ${response.status}`);
+        }
+        
+        const data = await response.json();
+        const newsResults = data.articles.map((article: any) => ({
+          title: article.title,
+          url: article.url,
+          source: article.source.name,
+          publishedAt: formatRelativeTime(new Date(article.publishedAt)),
+          description: article.description,
+          thumbnail: article.urlToImage
+        }));
+        
+        // Cache the results
+        setCachedData(cacheKey, newsResults);
+        
+        return newsResults;
+      } catch (error) {
+        console.error("Error with News API:", error);
+        toast({
+          title: "API Error",
+          description: "There was an error with the News API. Falling back to mock data.",
+          variant: "destructive",
+        });
+        // Fall back to mock data
+      }
     }
-    
-    const data = await response.json();
-    const newsResults = data.articles.map(article => ({
-      title: article.title,
-      url: article.url,
-      source: article.source.name,
-      publishedAt: formatRelativeTime(new Date(article.publishedAt)),
-      description: article.description,
-      thumbnail: article.urlToImage
-    }));
-    */
     
     // Mock news sources
     const sources = ['CNN', 'BBC', 'Reuters', 'The Guardian', 'Financial Times', 'The New York Times', 'Bloomberg'];
@@ -646,23 +751,87 @@ export async function performFinanceSearch(query: string): Promise<FinanceSearch
     
     const ticker = query.toUpperCase();
     
-    // In production, you'd use a real financial API like Alpha Vantage
-    /*
-    const url = new URL(`https://www.alphavantage.co/query`);
-    url.searchParams.append('function', 'GLOBAL_QUOTE');
-    url.searchParams.append('symbol', ticker);
-    url.searchParams.append('apikey', ALPHA_VANTAGE_API_KEY);
+    // Get API configuration
+    const config = getApiConfig();
     
-    const response = await fetch(url.toString());
-    if (!response.ok) {
-      throw new Error(`Finance API request failed: ${response.status}`);
+    // Check if we should use real API data
+    if (!config.useMockData && config.alphaVantageApiKey) {
+      try {
+        const url = new URL(`https://www.alphavantage.co/query`);
+        url.searchParams.append('function', 'GLOBAL_QUOTE');
+        url.searchParams.append('symbol', ticker);
+        url.searchParams.append('apikey', config.alphaVantageApiKey);
+        
+        const response = await fetch(url.toString());
+        if (!response.ok) {
+          throw new Error(`Finance API request failed: ${response.status}`);
+        }
+        
+        const data = await response.json();
+        
+        // Check if we got a valid response
+        if (data['Global Quote'] && Object.keys(data['Global Quote']).length > 0) {
+          const quote = data['Global Quote'];
+          
+          // Get company information (separate API call)
+          const overviewUrl = new URL(`https://www.alphavantage.co/query`);
+          overviewUrl.searchParams.append('function', 'OVERVIEW');
+          overviewUrl.searchParams.append('symbol', ticker);
+          overviewUrl.searchParams.append('apikey', config.alphaVantageApiKey);
+          
+          const overviewResponse = await fetch(overviewUrl.toString());
+          const overviewData = await overviewResponse.json();
+          
+          const price = parseFloat(quote['05. price']);
+          const previousClose = parseFloat(quote['08. previous close']);
+          const change = parseFloat(quote['09. change']);
+          const changePercent = parseFloat(quote['10. change percent'].replace('%', ''));
+          
+          // Create financial news with realistic dates (would come from a news API in a real implementation)
+          const getFinancialNews = () => {
+            return [
+              { title: `${ticker} announces new product line for 2025`, date: "2h ago", source: "Financial Times" },
+              { title: `Industry analysis: ${overviewData.Name || ticker}'s market position strengthens`, date: "5h ago", source: "Bloomberg" },
+              { title: `${ticker} quarterly earnings exceed expectations by 15%`, date: "1d ago", source: "CNBC" },
+              { title: `Analysts upgrade ${ticker} stock rating to "Strong Buy"`, date: "2d ago", source: "MarketWatch" },
+              { title: `${overviewData.Name || ticker} expanding into new international markets`, date: "3d ago", source: "Reuters" }
+            ];
+          };
+          
+          const result: FinanceSearchResult = {
+            ticker: ticker,
+            name: overviewData.Name || `${ticker} Corporation`,
+            price: price,
+            change: change,
+            changePercent: changePercent,
+            marketCap: overviewData.MarketCapitalization 
+              ? formatMarketCap(parseFloat(overviewData.MarketCapitalization)) 
+              : "N/A",
+            volume: formatVolume(parseInt(quote['06. volume'] || '0')),
+            peRatio: parseFloat(overviewData.PERatio || '0'),
+            weekRange: `${overviewData['52WeekLow'] || 'N/A'} - ${overviewData['52WeekHigh'] || 'N/A'}`,
+            news: getFinancialNews()
+          };
+          
+          // Cache the results
+          setCachedData(cacheKey, result);
+          
+          return result;
+        } else {
+          throw new Error("Invalid ticker symbol or API response");
+        }
+      } catch (error) {
+        console.error("Error with Alpha Vantage API:", error);
+        toast({
+          title: "API Error",
+          description: "There was an error with the financial data API. Falling back to mock data.",
+          variant: "destructive",
+        });
+        // Fall back to mock data
+      }
     }
     
-    const data = await response.json();
-    // Process data and create result
-    */
-    
-    // For demonstration, we're using enhanced mock data
+    // Use the company name if we have it, otherwise create a generic one
     const companyNames: Record<string, string> = {
       'AAPL': 'Apple Inc.',
       'MSFT': 'Microsoft Corporation',
@@ -725,5 +894,31 @@ export async function performFinanceSearch(query: string): Promise<FinanceSearch
       variant: "destructive",
     });
     return null;
+  }
+}
+
+// Helper function to format market cap
+function formatMarketCap(marketCap: number): string {
+  if (marketCap >= 1000000000000) {
+    return `${(marketCap / 1000000000000).toFixed(2)}T`;
+  } else if (marketCap >= 1000000000) {
+    return `${(marketCap / 1000000000).toFixed(2)}B`;
+  } else if (marketCap >= 1000000) {
+    return `${(marketCap / 1000000).toFixed(2)}M`;
+  } else {
+    return `${marketCap.toFixed(2)}`;
+  }
+}
+
+// Helper function to format volume
+function formatVolume(volume: number): string {
+  if (volume >= 1000000000) {
+    return `${(volume / 1000000000).toFixed(2)}B`;
+  } else if (volume >= 1000000) {
+    return `${(volume / 1000000).toFixed(2)}M`;
+  } else if (volume >= 1000) {
+    return `${(volume / 1000).toFixed(2)}K`;
+  } else {
+    return `${volume}`;
   }
 }

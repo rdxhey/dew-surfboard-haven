@@ -14,6 +14,7 @@ import Eclipse from "./pages/Eclipse";
 import Privacy from "./pages/Privacy";
 import HelpCenter from "./pages/HelpCenter";
 import Feedback from "./pages/Feedback";
+import Settings from "./pages/Settings";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient({
@@ -42,6 +43,7 @@ const App = () => (
           <Route path="/privacy" element={<Privacy />} />
           <Route path="/help-center" element={<HelpCenter />} />
           <Route path="/feedback" element={<Feedback />} />
+          <Route path="/settings" element={<Settings />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>

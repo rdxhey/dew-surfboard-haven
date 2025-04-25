@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { TrendingUp, TrendingDown, Newspaper, Calendar, ChartLine, Database, Loader, Star } from 'lucide-react';
+import { TrendingUp, TrendingDown, Newspaper, Calendar, ChartLine, Database, Loader, Star, Settings } from 'lucide-react';
 import { Switch } from "@/components/ui/switch";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -36,7 +36,6 @@ const Search = () => {
   const [activeFilter, setActiveFilter] = useState('all');
   const [favoriteStocks, setFavoriteStocks] = useState<string[]>([]);
   
-  // State for search results
   const [isSearching, setIsSearching] = useState(false);
   const [webResults, setWebResults] = useState<WebSearchResult[]>([]);
   const [imageResults, setImageResults] = useState<ImageSearchResult[]>([]);
@@ -53,7 +52,6 @@ const Search = () => {
   }, []);
 
   useEffect(() => {
-    // Load favorite stocks from localStorage
     const savedFavorites = localStorage.getItem('favoriteStocks');
     if (savedFavorites) {
       try {
@@ -115,7 +113,6 @@ const Search = () => {
 
   const handleFilterChange = (newFilter: string) => {
     setActiveFilter(newFilter);
-    // Re-run search with new filter if we have a query
     if (query && type === 'web') {
       performWebSearch(query, safeSearch, newFilter !== 'all' ? newFilter : undefined)
         .then(results => setWebResults(results));
@@ -144,6 +141,10 @@ const Search = () => {
     
     setFavoriteStocks(updatedFavorites);
     localStorage.setItem('favoriteStocks', JSON.stringify(updatedFavorites));
+  };
+
+  const goToSettings = () => {
+    navigate('/settings');
   };
 
   const renderWebSearchResults = () => {
@@ -635,6 +636,15 @@ const Search = () => {
             >
               Finance
             </button>
+            <Button 
+              variant="outline" 
+              size="sm" 
+              className="ml-4" 
+              onClick={goToSettings}
+            >
+              <Settings size={16} className="mr-2" />
+              Settings
+            </Button>
           </div>
         </div>
       </div>

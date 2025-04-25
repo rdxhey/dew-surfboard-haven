@@ -1,6 +1,6 @@
 
 import React, { useState, useRef, useEffect } from 'react';
-import { Search, Mic, Camera, Sparkles, TrendingUp } from 'lucide-react';
+import { Search, Mic, Camera, Sparkles, TrendingUp, Settings } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useNavigate } from 'react-router-dom';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
@@ -208,7 +208,7 @@ const SearchBar = ({ className, onSearch, initialValue = '' }: SearchBarProps) =
           onFocus={handleFocus}
           onBlur={handleBlur}
           placeholder="Search the web"
-          className="w-full h-12 px-5 pr-28 rounded-full border-none focus:outline-none focus:ring-0"
+          className="w-full h-12 px-5 pr-36 rounded-full border-none focus:outline-none focus:ring-0"
           aria-label="Search"
         />
         
@@ -220,6 +220,24 @@ const SearchBar = ({ className, onSearch, initialValue = '' }: SearchBarProps) =
             accept="image/*"
             className="hidden"
           />
+          
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <button
+                  type="button"
+                  onClick={() => navigate('/settings')}
+                  className="h-10 w-10 flex items-center justify-center text-gray-500 hover:text-primary hover:bg-gray-100 transition-all duration-300 rounded-full hover:shadow-sm"
+                  aria-label="Settings"
+                >
+                  <Settings size={18} />
+                </button>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p className="text-xs">Settings</p>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
           
           <TooltipProvider>
             <Tooltip>
